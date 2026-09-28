@@ -1,0 +1,117 @@
+import { SessaoTreino, PerfilAluno } from '../types';
+
+export const PERFIL_ALUNO_PADRAO: PerfilAluno = {
+  nome: 'Lucas Silveira Mendes',
+  anoEscolar: '4º Ano Fundamental',
+  escola: 'Colégio Integrado de Ensino',
+  avaliador: 'Fga. Mara Daher',
+  dataInicio: '01/09/2026',
+  metaPPM: 115,
+  observacoesGerais:
+    'O aluno apresenta excelente resposta ao fatiamento sintático em grupos de palavras. Houve avanço consistente na entonação interrogativa e diminuição das pausas inadequadas no meio das orações. Recomenda-se manter o treino com textos de Flesch entre 60 e 70.'
+};
+
+export const SESSOES_PADRAO: SessaoTreino[] = [
+  {
+    id: 'sess-006',
+    dataHora: '2026-09-28T14:30:00.000Z',
+    textoId: 21,
+    textoTitulo: 'A Conexão Humana na Era Digital',
+    nivel: 'Ensino Médio',
+    flesch: 58,
+    totalPalavras: 87,
+    tempoSegundos: 45,
+    velocidadePPM: 116,
+    modo: 'modelar',
+    vozUtilizada: 'Kore (IA)',
+    pausaConfigurada: 'media',
+    modoDestaque: 'palavra',
+    concluida: true,
+    observacoes: 'Excelente ritmo no texto de Ensino Médio, atingiu a meta de 115 PPM.'
+  },
+  {
+    id: 'sess-005',
+    dataHora: '2026-09-26T10:15:00.000Z',
+    textoId: 16,
+    textoTitulo: 'A Misteriosa Dança dos Vagalumes',
+    nivel: 'Avançado',
+    flesch: 55,
+    totalPalavras: 80,
+    tempoSegundos: 46,
+    velocidadePPM: 104,
+    modo: 'modelar',
+    vozUtilizada: 'Kore (IA)',
+    pausaConfigurada: 'media',
+    modoDestaque: 'palavra',
+    concluida: true,
+    observacoes: 'Leitura expressiva, respeitou bem as pausas de 1.1s nos pontos finais.'
+  },
+  {
+    id: 'sess-004',
+    dataHora: '2026-09-24T15:40:00.000Z',
+    textoId: 11,
+    textoTitulo: 'Um Passeio no Zoológico',
+    nivel: 'Intermediário',
+    flesch: 68,
+    totalPalavras: 68,
+    tempoSegundos: 42,
+    velocidadePPM: 97,
+    modo: 'silencioso',
+    vozUtilizada: 'Guia Silencioso',
+    pausaConfigurada: 'media',
+    modoDestaque: 'grupo',
+    concluida: true,
+    observacoes: 'Treino de leitura silenciosa com foco na divisão sintática.'
+  },
+  {
+    id: 'sess-003',
+    dataHora: '2026-09-21T11:00:00.000Z',
+    textoId: 6,
+    textoTitulo: 'A Raposa e as Uvas',
+    nivel: 'Fácil',
+    flesch: 78,
+    totalPalavras: 56,
+    tempoSegundos: 38,
+    velocidadePPM: 88,
+    modo: 'modelar',
+    vozUtilizada: 'Kore (IA)',
+    pausaConfigurada: 'media',
+    modoDestaque: 'palavra',
+    concluida: true,
+    observacoes: 'Boa prosódia, sem truncamento nas falas dos personagens.'
+  },
+  {
+    id: 'sess-002',
+    dataHora: '2026-09-17T09:30:00.000Z',
+    textoId: 3,
+    textoTitulo: 'O Pato Sabido',
+    nivel: 'Muito Fácil',
+    flesch: 88,
+    totalPalavras: 36,
+    tempoSegundos: 27,
+    velocidadePPM: 80,
+    modo: 'modelar',
+    vozUtilizada: 'Puck (IA)',
+    pausaConfigurada: 'curta',
+    modoDestaque: 'palavra',
+    concluida: true,
+    observacoes: 'Precisão de decodificação de 100% nas palavras simples.'
+  },
+  {
+    id: 'sess-001',
+    dataHora: '2026-09-14T14:00:00.000Z',
+    textoId: 1,
+    textoTitulo: 'O Gatinho Mimi',
+    nivel: 'Muito Fácil',
+    flesch: 92,
+    totalPalavras: 31,
+    tempoSegundos: 26,
+    velocidadePPM: 72,
+    modo: 'modelar',
+    vozUtilizada: 'Kore (IA)',
+    pausaConfigurada: 'curta',
+    modoDestaque: 'palavra',
+    concluida: true,
+    observacoes: 'Sessão diagnóstica de linha de base.'
+  }
+];

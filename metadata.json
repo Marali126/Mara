@@ -1,0 +1,6 @@
+{
+  "name": "Treino de Fluência - Mara Daher",
+  "description": "Aplicativo para treino de fluência de leitura com sincronização precisa de voz e destaque palavra por palavra ou em grupos sintáticos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
