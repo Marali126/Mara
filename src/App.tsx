@@ -1500,43 +1500,47 @@ export default function App() {
             <div className="flex items-center gap-1">
               <span className="text-[11px] font-bold text-amber-950 hidden sm:inline mr-0.5">Destaque:</span>
               <button
-                onClick={() => changeHighlightMode('palavra')}
-                className={`px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  highlightMode === 'palavra'
-                    ? 'bg-amber-600 text-white shadow-2xs'
-                    : 'bg-white/80 text-stone-700 hover:bg-white'
+                onClick={() => {
+                  changeHighlightMode('grupo');
+                  changeGroupMode(true);
+                }}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                  highlightMode === 'grupo'
+                    ? 'bg-amber-600 text-white shadow-xs ring-2 ring-amber-300'
+                    : 'bg-white/80 text-stone-700 hover:bg-white border border-amber-200'
                 }`}
-                title="Destaca palavra por palavra em tempo real, mantendo os sintagmas"
+                title="Destaca o grupo de palavras (sintagma inteiro) como uma unidade de sentido"
               >
-                🔤 Palavra
+                <span>📦 Sintagma (Grupo)</span>
               </button>
               <button
-                onClick={() => changeHighlightMode('grupo')}
-                className={`px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  highlightMode === 'grupo'
-                    ? 'bg-amber-600 text-white shadow-2xs'
-                    : 'bg-white/80 text-stone-700 hover:bg-white'
+                onClick={() => changeHighlightMode('palavra')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                  highlightMode === 'palavra'
+                    ? 'bg-amber-600 text-white shadow-xs ring-2 ring-amber-300'
+                    : 'bg-white/80 text-stone-700 hover:bg-white border border-amber-200'
                 }`}
-                title="Destaca o bloco sintático inteiro de uma vez"
+                title="Destaca palavra por palavra individualmente em tempo real"
               >
-                📦 Bloco
+                <span>🔤 Palavra a Palavra</span>
               </button>
             </div>
 
             {/* Bloco 2: Organização Visual */}
             <div className="flex items-center gap-1">
-              <span className="text-[11px] font-bold text-teal-950 hidden sm:inline mr-0.5">Visual:</span>
+              <span className="text-[11px] font-bold text-teal-950 hidden sm:inline mr-0.5">Organização:</span>
               <button
                 onClick={() => {
                   if (isPlaying) handleReset();
                   changeGroupMode(true);
+                  changeHighlightMode('grupo');
                 }}
                 className={`px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  groupMode
+                  groupMode && highlightMode === 'grupo'
                     ? 'bg-teal-700 text-white shadow-2xs'
-                    : 'bg-white/80 text-stone-700 hover:bg-white'
+                    : 'bg-white/80 text-stone-700 hover:bg-white border border-teal-200'
                 }`}
-                title="Exibe o texto organizado em blocos sintáticos"
+                title="Exibe e destaca o texto organizado em sintagmas (grupos de palavras)"
               >
                 📦 Sintagmas
               </button>
@@ -1548,7 +1552,7 @@ export default function App() {
                 className={`px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   !groupMode
                     ? 'bg-teal-700 text-white shadow-2xs'
-                    : 'bg-white/80 text-stone-700 hover:bg-white'
+                    : 'bg-white/80 text-stone-700 hover:bg-white border border-teal-200'
                 }`}
                 title="Exibe o texto contínuo como parágrafo tradicional"
               >
@@ -1636,7 +1640,7 @@ export default function App() {
                 : `🌐 ${selectedBrowserVoice?.name.split(' ')[0] || 'Navegador'}`}{' '}
               &bull; Pausa:{' '}
               {pauseDuration === 'curta' ? '0.6s' : pauseDuration === 'longa' ? '1.6s' : '1.1s'} &bull;{' '}
-              {highlightMode === 'palavra' ? 'Palavra a palavra' : 'Bloco sintático'}
+              {highlightMode === 'palavra' ? 'Destaque: Palavra a Palavra' : 'Destaque: Sintagma (Grupo)'}
             </span>
           </div>
         </div>
