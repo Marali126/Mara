@@ -270,9 +270,12 @@ export class FluencySpeechEngine {
     // Resolução ativa e dinâmica da voz fresca da API do navegador
     let chosenVoice: SpeechSynthesisVoice | null = null;
     const freshVoices = window.speechSynthesis.getVoices();
-    const ptFresh = freshVoices.filter(
-      (v) => (v.lang.startsWith('pt') || v.lang.startsWith('por')) && !v.name.toLowerCase().includes('helena')
+    const allPtFresh = freshVoices.filter(
+      (v) => v.lang.startsWith('pt') || v.lang.startsWith('por')
     );
+    const nonHelenaFresh = allPtFresh.filter((v) => !v.name.toLowerCase().includes('helena'));
+    // Prefere vozes modernas/neurais, mas se Helena for a única voz instalada (comum no Windows), usa como fallback para não ficar mudo
+    const ptFresh = nonHelenaFresh.length > 0 ? nonHelenaFresh : allPtFresh;
 
     if (this.selectedBrowserVoiceURI || this.selectedBrowserVoiceName) {
       chosenVoice =
@@ -308,6 +311,8 @@ export class FluencySpeechEngine {
         ptFresh.find((v) => v.lang === 'pt-BR' && !v.name.toLowerCase().includes('google') && !v.name.toLowerCase().includes('helena')) ||
         ptFresh.find((v) => v.lang === 'pt-BR') ||
         ptFresh[0] ||
+        freshVoices.find((v) => v.lang.startsWith('pt')) ||
+        freshVoices[0] ||
         null;
     }
 
@@ -605,21 +610,24 @@ export class FluencySpeechEngine {
       };
 
       audio.onerror = (err) => {
-        console.warn('Erro na reprodução do áudio de IA:', err);
+        console.warn('Erro na reprodução do áudio de IA, alternando para voz do navegador:', err);
         this.callbacks.onAudioLoadingChange?.(false);
-        this.callbacks.onError?.('Não foi possível reproduzir a voz de IA.');
-        this.stop();
-        this.callbacks.onFinished();
+        this.callbacks.onError?.('Áudio de IA indisponível. Reproduzindo com a voz do dispositivo!');
+        // Fallback imediato para voz do navegador
+        this.voiceMode = 'browser';
+        this.playBrowserVoiceSentence(0);
       };
 
       await audio.play();
     } catch (err: any) {
-      console.warn('Erro ao obter áudio de IA:', err);
+      console.warn('Erro ao obter áudio de IA, alternando para voz do navegador:', err);
       this.callbacks.onAudioLoadingChange?.(false);
-      const voiceDisplay = this.aiVoiceName === 'Puck' ? 'Gabriel' : this.aiVoiceName;
-      this.callbacks.onError?.(`Não foi possível carregar o áudio da voz de ${voiceDisplay}.`);
-      this.stop();
-      this.callbacks.onFinished();
+      this.callbacks.onError?.(
+        'Voz IA indisponível neste ambiente (servidor backend ou GEMINI_API_KEY ausente). Reproduzindo com a voz do dispositivo!'
+      );
+      // Fallback transparente e imediato: o áudio nunca fica mudo!
+      this.voiceMode = 'browser';
+      this.playBrowserVoiceSentence(0);
     }
   }
 

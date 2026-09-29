@@ -371,18 +371,39 @@ export default function App() {
     selectedBrowserVoice
   ]);
 
-  // Carregamento e sincronização contínua das vozes do navegador (excluindo Helena)
+  // Status da API de IA para suporte em repositórios clonados e implantações locais
+  const [aiAvailable, setAiAvailable] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch('/api/ai-status')
+      .then((res) => {
+        if (!res.ok) throw new Error('status error');
+        return res.json();
+      })
+      .then((data) => {
+        const hasKey = Boolean(data.hasKey);
+        setAiAvailable(hasKey);
+        if (!hasKey) {
+          // Se a chave não estiver configurada no repositório, usa a voz do dispositivo por padrão
+          setVoiceMode('browser');
+        }
+      })
+      .catch(() => {
+        setAiAvailable(false);
+        setVoiceMode('browser');
+      });
+  }, []);
+
+  // Carregamento e sincronização contínua das vozes do navegador
   const loadVoices = () => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
     const voices = window.speechSynthesis.getVoices();
     setAvailableVoices(voices);
 
-    // Prioriza vozes neurais/naturais em português automaticamente (exclui Helena)
-    const ptVoices = voices.filter((v) => {
-      const isPt = v.lang.startsWith('pt') || v.lang.startsWith('por');
-      const isHelena = v.name.toLowerCase().includes('helena');
-      return isPt && !isHelena;
-    });
+    const allPtVoices = voices.filter((v) => v.lang.startsWith('pt') || v.lang.startsWith('por'));
+    const preferredPt = allPtVoices.filter((v) => !v.name.toLowerCase().includes('helena'));
+    // Prefere não-Helena se existirem vozes modernas/neurais; se Helena for a única voz instalada (comum no Windows), mantém para não emudecer
+    const ptVoices = preferredPt.length > 0 ? preferredPt : allPtVoices;
 
     if (ptVoices.length > 0) {
       const savedVoiceName = localStorage.getItem('fluencia_browser_voice_name');
@@ -423,16 +444,22 @@ export default function App() {
     loadVoices();
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       window.speechSynthesis.onvoiceschanged = loadVoices;
+      const t1 = setTimeout(loadVoices, 200);
+      const t2 = setTimeout(loadVoices, 800);
+      const t3 = setTimeout(loadVoices, 2000);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+        clearTimeout(t3);
+      };
     }
   }, []);
 
-  // Classifica e ordena as vozes em português colocando as melhores/naturais no topo (Helena 100% excluída)
+  // Classifica e ordena as vozes em português
   const classifiedVoices: ClassifiedBrowserVoice[] = useMemo(() => {
-    const ptVoices = availableVoices.filter((v) => {
-      const isPt = v.lang.startsWith('pt') || v.lang.startsWith('por');
-      const isHelena = v.name.toLowerCase().includes('helena');
-      return isPt && !isHelena;
-    });
+    const allPtVoices = availableVoices.filter((v) => v.lang.startsWith('pt') || v.lang.startsWith('por'));
+    const preferredPt = allPtVoices.filter((v) => !v.name.toLowerCase().includes('helena'));
+    const ptVoices = preferredPt.length > 0 ? preferredPt : allPtVoices;
 
     const mapped = ptVoices
       .map(classifyBrowserVoice)
@@ -500,7 +527,14 @@ export default function App() {
         audio.play().catch(console.warn);
       }
     } catch (err) {
-      console.warn('Erro ao testar voz de IA:', err);
+      console.warn('Erro ao testar voz de IA, testando com voz do dispositivo:', err);
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+        const u = new SpeechSynthesisUtterance('Voz IA não configurada neste repositório. Testando com a voz do dispositivo!');
+        u.lang = 'pt-BR';
+        if (selectedBrowserVoice) u.voice = selectedBrowserVoice;
+        window.speechSynthesis.speak(u);
+      }
     }
   };
 
@@ -892,6 +926,21 @@ export default function App() {
               {/* CONTEÚDO DA ABA DE IA */}
               {abaVozes === 'ai' && (
                 <div className="overflow-y-auto space-y-2.5 pr-1 flex-1 py-1">
+                  {aiAvailable === false && (
+                    <div className="bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-xs text-amber-950 space-y-1.5 shadow-2xs">
+                      <div className="font-bold flex items-center gap-1.5 text-amber-950 text-sm">
+                        <Info className="w-4 h-4 text-amber-700 shrink-0" />
+                        <span>Como habilitar as Vozes de IA no seu Repositório:</span>
+                      </div>
+                      <p className="text-stone-700 leading-relaxed">
+                        No seu repositório local, crie um arquivo <code className="bg-amber-200/80 px-1 py-0.5 rounded font-mono">.env</code> contendo sua chave <code className="bg-amber-200/80 px-1 py-0.5 rounded font-mono">GEMINI_API_KEY=sua_chave</code> e inicie o projeto com <code className="bg-amber-200/80 px-1 py-0.5 rounded font-mono">npm run dev</code>.
+                      </p>
+                      <div className="bg-purple-100/90 border border-purple-300 rounded-lg p-2 text-purple-950 font-medium">
+                        👉 <strong>Prefere sem chave de API e sem configuração?</strong> Clique na aba <strong>"Vozes do Dispositivo"</strong> acima para usar a fala nativa do seu navegador/computador 100% gratuita e offline!
+                      </div>
+                    </div>
+                  )}
+
                   <div className="bg-amber-100/70 border border-amber-300 rounded-xl p-3 text-xs text-amber-950">
                     <strong>✨ Máxima Expressividade:</strong> Estas vozes usam inteligência artificial avançada para ler com emoção, respiração natural e entonação de contador de histórias, sem soar robóticas.
                   </div>
