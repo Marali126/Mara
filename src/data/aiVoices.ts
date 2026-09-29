@@ -50,7 +50,6 @@ export function classifyBrowserVoice(voice: SpeechSynthesisVoice): ClassifiedBro
     nameLower.includes('natural') ||
     nameLower.includes('online') ||
     nameLower.includes('neural') ||
-    nameLower.includes('google') ||
     nameLower.includes('enhanced') ||
     nameLower.includes('premium') ||
     nameLower.includes('siri') ||
@@ -61,10 +60,10 @@ export function classifyBrowserVoice(voice: SpeechSynthesisVoice): ClassifiedBro
   let qualityLabel = 'Voz Local (Sintetizador Padrão)';
   if (nameLower.includes('natural') || nameLower.includes('neural')) {
     qualityLabel = '🌟 Neural Natural (Ultra-Expressiva)';
-  } else if (nameLower.includes('google')) {
-    qualityLabel = '✨ Google Cloud (Alta Expressividade)';
-  } else if (nameLower.includes('enhanced') || nameLower.includes('premium')) {
+  } else if (nameLower.includes('enhanced') || nameLower.includes('premium') || nameLower.includes('siri')) {
     qualityLabel = '💎 Alta Definição';
+  } else if (nameLower.includes('google')) {
+    qualityLabel = '🔊 Voz Básica do Navegador';
   }
 
   let genderEstimate: 'feminino' | 'masculino' | 'neutro' = 'neutro';

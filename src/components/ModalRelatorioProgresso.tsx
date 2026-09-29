@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FileText,
   Download,
@@ -56,6 +56,10 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
   const [gerandoPdf, setGerandoPdf] = useState<boolean>(false);
   const [feedbackSucesso, setFeedbackSucesso] = useState<string | null>(null);
 
+  useEffect(() => {
+    setPerfilLocal(perfil);
+  }, [perfil]);
+
   if (!isOpen) return null;
 
   const stats = calcularEstatisticas(sessoes);
@@ -63,7 +67,7 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
   const handleSalvarPerfilForm = (e: React.FormEvent) => {
     e.preventDefault();
     onSalvarPerfil(perfilLocal);
-    setFeedbackSucesso('Dados do aluno e avaliador atualizados com sucesso!');
+    setFeedbackSucesso('Dados do paciente e avaliação atualizados com sucesso!');
     setTimeout(() => setFeedbackSucesso(null), 3000);
   };
 
@@ -77,11 +81,11 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
         incluirAssinatura: true
       });
 
-      const alunoSlug = (perfilLocal.nome || 'Aluno')
+      const alunoSlug = (perfilLocal.nome || 'Paciente')
         .toLowerCase()
         .replace(/[^a-z0-9]/g, '_')
         .replace(/_+/g, '_');
-      const dataStr = new Date().toISOString().slice(0, 10);
+      const dataStr = (perfilLocal.dataAvaliacao || new Date().toLocaleDateString('pt-BR')).replace(/[\/\\]/g, '-');
       const filename = `Relatorio_Fluencia_${alunoSlug}_${dataStr}.pdf`;
 
       doc.save(filename);
@@ -198,12 +202,51 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
           </div>
         )}
 
+        {/* BARRA RÁPIDA DE IDENTIFICAÇÃO DO PACIENTE & DATA */}
+        <div className="bg-amber-200/60 border-b border-amber-300 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
+          <div className="flex items-center gap-2 flex-1 min-w-[240px]">
+            <span className="font-bold text-amber-950 flex items-center gap-1.5 shrink-0">
+              <User className="w-4 h-4 text-amber-800" />
+              Paciente / Aluno:
+            </span>
+            <input
+              type="text"
+              value={perfilLocal.nome}
+              onChange={(e) => {
+                const updated = { ...perfilLocal, nome: e.target.value };
+                setPerfilLocal(updated);
+                onSalvarPerfil(updated);
+              }}
+              placeholder="Digite o nome do paciente..."
+              className="flex-1 max-w-sm px-3 py-1 font-bold text-stone-900 bg-white border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-amber-950 flex items-center gap-1.5 shrink-0">
+              <Calendar className="w-4 h-4 text-amber-800" />
+              Data da Avaliação:
+            </span>
+            <input
+              type="text"
+              value={perfilLocal.dataAvaliacao || perfilLocal.dataInicio || new Date().toLocaleDateString('pt-BR')}
+              onChange={(e) => {
+                const updated = { ...perfilLocal, dataAvaliacao: e.target.value };
+                setPerfilLocal(updated);
+                onSalvarPerfil(updated);
+              }}
+              placeholder="DD/MM/AAAA"
+              className="w-28 text-center px-2 py-1 font-bold text-stone-900 bg-white border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
+            />
+          </div>
+        </div>
+
         {/* NAVEGAÇÃO DE ABAS */}
         <div className="bg-amber-100/70 border-b border-amber-200 px-4 pt-2 flex gap-1 sm:gap-2 overflow-x-auto shrink-0">
           {[
             { id: 'indicadores', label: 'Indicadores & Desempenho', icon: Award },
             { id: 'historico', label: `Histórico (${sessoes.length})`, icon: Clock },
-            { id: 'perfil', label: 'Dados do Aluno', icon: User },
+            { id: 'perfil', label: 'Dados do Paciente', icon: User },
             { id: 'previa', label: 'Prévia A4 do Relatório', icon: Eye }
           ].map((tab) => {
             const Icon = tab.icon;
@@ -521,39 +564,39 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
                     <label className="block text-xs font-bold text-stone-700 mb-1">
-                      Nome do(a) Aluno(a):
+                      Nome do(a) Paciente / Aluno(a):
                     </label>
                     <input
                       type="text"
                       value={perfilLocal.nome}
                       onChange={(e) => setPerfilLocal({ ...perfilLocal, nome: e.target.value })}
                       placeholder="Ex: Lucas Silveira Mendes"
-                      className="w-full px-3 py-2 text-xs bg-amber-50/50 border border-amber-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      className="w-full px-3 py-2 text-xs bg-amber-50/50 border border-amber-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-stone-700 mb-1">
-                      Ano / Turma Escolar:
+                      Data da Avaliação / Sessão:
                     </label>
                     <input
                       type="text"
-                      value={perfilLocal.anoEscolar}
-                      onChange={(e) => setPerfilLocal({ ...perfilLocal, anoEscolar: e.target.value })}
-                      placeholder="Ex: 4º Ano Fundamental A"
-                      className="w-full px-3 py-2 text-xs bg-amber-50/50 border border-amber-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      value={perfilLocal.dataAvaliacao || perfilLocal.dataInicio || new Date().toLocaleDateString('pt-BR')}
+                      onChange={(e) => setPerfilLocal({ ...perfilLocal, dataAvaliacao: e.target.value })}
+                      placeholder="Ex: 29/09/2026"
+                      className="w-full px-3 py-2 text-xs bg-amber-50/50 border border-amber-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-stone-700 mb-1">
-                      Escola / Clínica / Consultório:
+                      Instituição / Clínica / Consultório:
                     </label>
                     <input
                       type="text"
                       value={perfilLocal.escola}
                       onChange={(e) => setPerfilLocal({ ...perfilLocal, escola: e.target.value })}
-                      placeholder="Ex: Colégio Integrado de Ensino"
+                      placeholder="Ex: Clínica Fonoaudiológica Viva Voz"
                       className="w-full px-3 py-2 text-xs bg-amber-50/50 border border-amber-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
@@ -567,6 +610,19 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
                       value={perfilLocal.avaliador}
                       onChange={(e) => setPerfilLocal({ ...perfilLocal, avaliador: e.target.value })}
                       placeholder="Ex: Fga. Mara Daher (CRFa 12345)"
+                      className="w-full px-3 py-2 text-xs bg-amber-50/50 border border-amber-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 mb-1">
+                      Ano / Turma Escolar (ou Idade):
+                    </label>
+                    <input
+                      type="text"
+                      value={perfilLocal.anoEscolar}
+                      onChange={(e) => setPerfilLocal({ ...perfilLocal, anoEscolar: e.target.value })}
+                      placeholder="Ex: 4º Ano Fundamental (9 anos)"
                       className="w-full px-3 py-2 text-xs bg-amber-50/50 border border-amber-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
@@ -685,38 +741,47 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
                       <p className="text-[11px] text-slate-500">
                         Treino de Prosódia Sintática, Ritmo Leitor e Decodificação Automatizada
                       </p>
+                      <div className="flex items-center gap-3 mt-1 text-[11px]">
+                        <span className="font-bold text-amber-800">
+                          Paciente: {perfilLocal.nome || 'Não informado'}
+                        </span>
+                        <span className="text-stone-300">•</span>
+                        <span className="font-semibold text-slate-700">
+                          Data da Avaliação: {perfilLocal.dataAvaliacao || perfilLocal.dataInicio || new Date().toLocaleDateString('pt-BR')}
+                        </span>
+                      </div>
                       <p className="text-[10px] text-slate-400 mt-0.5">
-                        Emissão: {new Date().toLocaleDateString('pt-BR')} • Doc ID: FL-{Date.now().toString().slice(-6)}
+                        Emissão do Documento: {new Date().toLocaleDateString('pt-BR')} • Doc ID: FL-{Date.now().toString().slice(-6)}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Bloco Aluno */}
+                {/* Bloco Paciente / Aluno */}
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs grid grid-cols-2 sm:grid-cols-3 gap-2">
                   <div>
-                    <span className="text-stone-500 text-[10px] block">ALUNO(A)</span>
-                    <strong className="text-stone-900">{perfilLocal.nome || 'Não informado'}</strong>
+                    <span className="text-stone-500 text-[10px] block font-semibold">PACIENTE / ALUNO(A)</span>
+                    <strong className="text-stone-900 text-sm">{perfilLocal.nome || 'Não informado'}</strong>
                   </div>
                   <div>
-                    <span className="text-stone-500 text-[10px] block">ANO / SÉRIE</span>
-                    <strong className="text-stone-900">{perfilLocal.anoEscolar || 'Não informado'}</strong>
+                    <span className="text-stone-500 text-[10px] block font-semibold">DATA DA AVALIAÇÃO</span>
+                    <strong className="text-amber-800 font-bold">{perfilLocal.dataAvaliacao || perfilLocal.dataInicio || new Date().toLocaleDateString('pt-BR')}</strong>
                   </div>
                   <div>
-                    <span className="text-stone-500 text-[10px] block">META DE FLUÊNCIA</span>
+                    <span className="text-stone-500 text-[10px] block font-semibold">META DE FLUÊNCIA</span>
                     <strong className="text-amber-800">{perfilLocal.metaPPM} PPM</strong>
                   </div>
                   <div>
-                    <span className="text-stone-500 text-[10px] block">INSTITUIÇÃO</span>
+                    <span className="text-stone-500 text-[10px] block font-semibold">INSTITUIÇÃO / CLÍNICA</span>
                     <strong className="text-stone-900">{perfilLocal.escola || 'Não informada'}</strong>
                   </div>
                   <div>
-                    <span className="text-stone-500 text-[10px] block">AVALIADOR(A)</span>
+                    <span className="text-stone-500 text-[10px] block font-semibold">PROFISSIONAL / AVALIADOR(A)</span>
                     <strong className="text-stone-900">{perfilLocal.avaliador || 'Não informado'}</strong>
                   </div>
                   <div>
-                    <span className="text-stone-500 text-[10px] block">INÍCIO DO TREINO</span>
-                    <strong className="text-stone-900">{perfilLocal.dataInicio || 'Recente'}</strong>
+                    <span className="text-stone-500 text-[10px] block font-semibold">ANO / TURMA (OU IDADE)</span>
+                    <strong className="text-stone-900">{perfilLocal.anoEscolar || 'Não informado'}</strong>
                   </div>
                 </div>
 

@@ -95,64 +95,49 @@ async function startServer() {
 
       const ai = getAI();
 
-      // Tentativa primária com gemini-3.8-flash-tts (modelo de máxima expressividade)
+      // Síntese de voz com gemini-3.8-flash-lite-tts com retry para limites transitórios de taxa
       let response: any = null;
-      try {
-        response = await ai.models.generateContent({
-          model: "gemini-3.8-flash-tts",
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: cleanText,
-                  speechMetadata: {
-                    style: "Voz calorosa humana, pedagógica, dicção clara e ritmo expressivo em português do Brasil com pausas nítidas na pontuação.",
+      let attempts = 0;
+      const maxAttempts = 3;
+      while (attempts < maxAttempts) {
+        attempts++;
+        try {
+          response = await ai.models.generateContent({
+            model: "gemini-3.8-flash-lite-tts",
+            contents: [
+              {
+                role: "user",
+                parts: [
+                  {
+                    text: cleanText,
+                    speechMetadata: {
+                      style: "Voz humana calorosa, pedagógica, dicção clara e ritmo expressivo em português do Brasil com pausas nítidas na pontuação.",
+                    },
                   },
-                },
-              ],
-            },
-          ],
-          config: {
-            responseModalities: ["AUDIO"],
-            speechConfig: {
-              voiceConfig: {
-                prebuiltVoiceConfig: {
-                  voiceName: validVoice,
+                ],
+              },
+            ],
+            config: {
+              responseModalities: ["AUDIO"],
+              speechConfig: {
+                voiceConfig: {
+                  prebuiltVoiceConfig: {
+                    voiceName: validVoice,
+                  },
                 },
               },
             },
-          },
-        });
-      } catch (primaryErr: any) {
-        console.warn("Tentativa gemini-3.8-flash-tts falhou, tentando flash-lite-tts:", primaryErr?.message || primaryErr);
-        // Fallback secundário com gemini-3.8-flash-lite-tts
-        response = await ai.models.generateContent({
-          model: "gemini-3.8-flash-lite-tts",
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: cleanText,
-                  speechMetadata: {
-                    style: "Voz calorosa humana, pedagógica, dicção clara e ritmo expressivo em português do Brasil com pausas nítidas na pontuação.",
-                  },
-                },
-              ],
-            },
-          ],
-          config: {
-            responseModalities: ["AUDIO"],
-            speechConfig: {
-              voiceConfig: {
-                prebuiltVoiceConfig: {
-                  voiceName: validVoice,
-                },
-              },
-            },
-          },
-        });
+          });
+          break;
+        } catch (apiErr: any) {
+          const isRateLimit = String(apiErr?.message || "").includes("429") || String(apiErr?.message || "").includes("RESOURCE_EXHAUSTED");
+          if (isRateLimit && attempts < maxAttempts) {
+            console.warn(`Tentativa ${attempts} de TTS atingiu taxa máxima. Aguardando ${attempts * 2}s...`);
+            await new Promise((r) => setTimeout(r, 2000 * attempts));
+            continue;
+          }
+          throw apiErr;
+        }
       }
 
       const part = response?.candidates?.[0]?.content?.parts?.[0];

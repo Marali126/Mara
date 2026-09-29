@@ -102,6 +102,7 @@ export interface PerfilAluno {
   escola: string;
   avaliador: string;
   dataInicio: string;
+  dataAvaliacao?: string; // Data da sessão ou avaliação do paciente
   metaPPM: number;
   observacoesGerais: string;
 }

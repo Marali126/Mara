@@ -22,6 +22,46 @@ const COORDINATE_CONJUNCTIONS = new Set([
   'mas', 'porém', 'contudo', 'todavia', 'entretanto', 'portanto', 'logo', 'e'
 ]);
 
+// Adjetivos comuns e sufixos adjetivos do português que NUNCA devem ser separados do substantivo antecedente
+const COMMON_ADJECTIVES = new Set([
+  'rico', 'rica', 'ricos', 'ricas',
+  'bom', 'boa', 'bons', 'boas',
+  'grande', 'grandes', 'pequeno', 'pequena', 'pequenos', 'pequenas',
+  'novo', 'nova', 'novos', 'novas',
+  'velho', 'velha', 'velhos', 'velhas',
+  'alto', 'alta', 'altos', 'altas',
+  'baixo', 'baixa', 'baixos', 'baixas',
+  'frio', 'fria', 'frios', 'frias',
+  'quente', 'quentes',
+  'limpo', 'limpa', 'limpos', 'limpas',
+  'suave', 'suaves', 'forte', 'fortes',
+  'azul', 'azuis', 'verde', 'verdes', 'branco', 'branca', 'brancos', 'brancas',
+  'preto', 'preta', 'pretos', 'pretas', 'amarelo', 'amarela', 'amarelos', 'amarelas',
+  'dourado', 'dourada', 'dourados', 'douradas',
+  'vermelho', 'vermelha', 'vermelhos', 'vermelhas',
+  'fofo', 'fofa', 'fofos', 'fofas',
+  'feliz', 'felizes', 'alegre', 'alegres',
+  'esperto', 'esperta', 'espertos', 'espertas',
+  'marinho', 'marinha', 'marinhos', 'marinhas',
+  'terrestre', 'terrestres', 'lunar', 'lunares', 'solar', 'solares',
+  'profundo', 'profunda', 'profundos', 'profundas',
+  'humano', 'humana', 'humanos', 'humanas',
+  'natural', 'naturais'
+]);
+
+function isLikelyAdjectiveOrModifier(cleanWord: string): boolean {
+  if (COMMON_ADJECTIVES.has(cleanWord)) return true;
+  return (
+    cleanWord.endsWith('oso') || cleanWord.endsWith('osa') || cleanWord.endsWith('osos') || cleanWord.endsWith('osas') ||
+    cleanWord.endsWith('vel') || cleanWord.endsWith('veis') ||
+    cleanWord.endsWith('al') || cleanWord.endsWith('ais') ||
+    cleanWord.endsWith('ar') || cleanWord.endsWith('ares') ||
+    cleanWord.endsWith('ico') || cleanWord.endsWith('ica') || cleanWord.endsWith('icos') || cleanWord.endsWith('icas') ||
+    cleanWord.endsWith('ivo') || cleanWord.endsWith('iva') || cleanWord.endsWith('ivos') || cleanWord.endsWith('ivas') ||
+    cleanWord.endsWith('ante') || cleanWord.endsWith('ente') || cleanWord.endsWith('antes') || cleanWord.endsWith('entes')
+  );
+}
+
 /**
  * Tokeniza o texto em palavras preservando índices exatos de caracteres e pontuação.
  * Se syntacticSource contiver barras (/), utiliza-as como limites de sintagmas curados.
@@ -335,6 +375,16 @@ export function createSyntacticGroups(
       ) {
         flushGroup();
         continue;
+      }
+
+      // Proteção gramatical estrita: NUNCA separe um substantivo de seu adjetivo ou modificador adjacente
+      if (
+        nextToken &&
+        isLikelyAdjectiveOrModifier(nextToken.cleanWord) &&
+        !currentToken.hasComma &&
+        !currentToken.hasPeriod
+      ) {
+        continue; // Garante que o adjetivo fique sempre no mesmo grupo do substantivo!
       }
 
       // 6. Limite de tamanho de grupo sintático com proteção a termos pendentes (3 a 4 palavras)

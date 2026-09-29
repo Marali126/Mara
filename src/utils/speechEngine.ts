@@ -296,12 +296,16 @@ export class FluencySpeechEngine {
           return (
             n.includes('natural') ||
             n.includes('neural') ||
-            n.includes('google') ||
             n.includes('luciana') ||
+            n.includes('francisca') ||
             n.includes('beatriz') ||
-            n.includes('francisca')
+            n.includes('camila') ||
+            n.includes('felipe') ||
+            n.includes('leticia') ||
+            n.includes('antonio')
           );
         }) ||
+        ptFresh.find((v) => v.lang === 'pt-BR' && !v.name.toLowerCase().includes('google') && !v.name.toLowerCase().includes('helena')) ||
         ptFresh.find((v) => v.lang === 'pt-BR') ||
         ptFresh[0] ||
         null;
@@ -603,16 +607,19 @@ export class FluencySpeechEngine {
       audio.onerror = (err) => {
         console.warn('Erro na reprodução do áudio de IA:', err);
         this.callbacks.onAudioLoadingChange?.(false);
-        this.callbacks.onError?.('Não foi possível reproduzir o áudio de IA. Alternando para voz local.');
-        this.playBrowserVoiceSentence(0);
+        this.callbacks.onError?.('Não foi possível reproduzir a voz de IA.');
+        this.stop();
+        this.callbacks.onFinished();
       };
 
       await audio.play();
     } catch (err: any) {
-      console.warn('Erro ao obter áudio de IA, alternando para voz local:', err);
+      console.warn('Erro ao obter áudio de IA:', err);
       this.callbacks.onAudioLoadingChange?.(false);
-      // Fallback gracioso para a voz do navegador sem interromper a experiência
-      this.playBrowserVoiceSentence(0);
+      const voiceDisplay = this.aiVoiceName === 'Puck' ? 'Gabriel' : this.aiVoiceName;
+      this.callbacks.onError?.(`Não foi possível carregar o áudio da voz de ${voiceDisplay}.`);
+      this.stop();
+      this.callbacks.onFinished();
     }
   }
 

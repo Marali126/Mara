@@ -56,7 +56,7 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     nivel: "Muito Fácil",
     cor: "teal",
     text: "A casa do vovô fica no campo. Lá tem uma mangueira bem alta cheia de frutas doces. Vovô colhe mangas maduras em uma cesta de palha. Nós comemos manga fresca na varanda. Os passarinhos cantam felizes nas árvores. É um lugar de muita paz e alegria.",
-    syntacticText: "A casa do vovô / fica no campo. Lá tem uma mangueira / bem alta / cheia de frutas doces. Vovô colhe / mangas maduras / em uma cesta de palha. Nós comemos / manga fresca / na varanda. Os passarinhos / cantam felizes / nas árvores. É um lugar / de muita paz / e alegria.",
+    syntacticText: "A casa do vovô / fica no campo. Lá tem uma mangueira bem alta / cheia de frutas doces. Vovô colhe / mangas maduras / em uma cesta de palha. Nós comemos / manga fresca / na varanda. Os passarinhos / cantam felizes / nas árvores. É um lugar / de muita paz / e alegria.",
     leiturabilidade: {
       flesch: 89,
       classificacao: "Muito Fácil",
@@ -71,7 +71,7 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     nivel: "Muito Fácil",
     cor: "teal",
     text: "Lucas fez um barquinho de papel azul. Ele colocou o barquinho na água calma da bacia. O vento suave soprou as velinhas de papel. O barquinho navegou de um lado até o outro sem afundar. Lucas sorriu e bateu palmas de tanta emoção.",
-    syntacticText: "Lucas fez / um barquinho / de papel azul. Ele colocou o barquinho / na água calma / da bacia. O vento suave / soprou as velinhas / de papel. O barquinho navegou / de um lado / até o outro / sem afundar. Lucas sorriu / e bateu palmas / de tanta emoção.",
+    syntacticText: "Lucas fez / um barquinho de papel azul. Ele colocou o barquinho / na água calma da bacia. O vento suave / soprou as velinhas de papel. O barquinho navegou / de um lado / até o outro / sem afundar. Lucas sorriu / e bateu palmas / de tanta emoção.",
     leiturabilidade: {
       flesch: 88,
       classificacao: "Muito Fácil",
@@ -80,18 +80,48 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
       tempoLeituraSegundos: 23
     }
   },
+  {
+    id: 6,
+    title: "O Coelho Nino",
+    nivel: "Muito Fácil",
+    cor: "teal",
+    text: "O coelho Nino pula veloz no gramado. Suas orelhas compridas são macias e brancas. Nino adora mastigar cenouras frescas e alface crocante. Quando ouve um barulho, ele corre para a toca fofinha. Nino é o xodó de todas as crianças.",
+    syntacticText: "O coelho Nino / pula veloz / no gramado. Suas orelhas compridas / são macias e brancas. Nino adora mastigar / cenouras frescas / e alface crocante. Quando ouve um barulho, / ele corre / para a toca fofinha. Nino é o xodó / de todas as crianças.",
+    leiturabilidade: {
+      flesch: 92,
+      classificacao: "Muito Fácil",
+      anoEscolar: "1º e 2º ano",
+      palavras: 41,
+      tempoLeituraSegundos: 21
+    }
+  },
+  {
+    id: 7,
+    title: "A Pipa Colorida",
+    nivel: "Muito Fácil",
+    cor: "teal",
+    text: "Davi fez uma pipa amarela e vermelha. O vento forte levantou a pipa bem alto no céu azul. Ela dançava entre as nuvens branquinhas como um pássaro ligeiro. Davi segurava a linha com muita firmeza e alegria. Voar pipa é a brincadeira mais divertida da tarde.",
+    syntacticText: "Davi fez / uma pipa amarela e vermelha. O vento forte / levantou a pipa / bem alto / no céu azul. Ela dançava / entre as nuvens branquinhas / como um pássaro ligeiro. Davi segurava a linha / com muita firmeza / e alegria. Voar pipa / é a brincadeira mais divertida / da tarde.",
+    leiturabilidade: {
+      flesch: 90,
+      classificacao: "Muito Fácil",
+      anoEscolar: "1º e 2º ano",
+      palavras: 44,
+      tempoLeituraSegundos: 22
+    }
+  },
 
   // =========================================================================
   // NÍVEL 2: FÁCIL (Consolidação da Leitura / 3º e 4º Ano)
   // Flesch: 76 a 87 | Períodos simples e compostos coordenados, vocabulário cotidiano
   // =========================================================================
   {
-    id: 6,
+    id: 8,
     title: "A Raposa Esperta",
     nivel: "Fácil",
     cor: "teal",
     text: "A raposa é um animal mamífero muito esperto. Ela tem pelo alaranjado e uma cauda grande e peluda. As raposas vivem em tocas seguras que elas mesmas cavam no solo da floresta. Elas caçam pequenos animais durante a noite. A raposa come ratos, coelhos e frutas silvestres. Suas orelhas são pontudas e ajudam a ouvir qualquer barulho de longe.",
-    syntacticText: "A raposa / é um animal mamífero / muito esperto. Ela tem pelo alaranjado / e uma cauda grande / e peluda. As raposas vivem / em tocas seguras / que elas mesmas cavam / no solo da floresta. Elas caçam / pequenos animais / durante a noite. A raposa come / ratos, coelhos / e frutas silvestres. Suas orelhas são pontudas / e ajudam a ouvir / qualquer barulho de longe.",
+    syntacticText: "A raposa / é um animal mamífero muito esperto. Ela tem pelo alaranjado / e uma cauda grande e peluda. As raposas vivem / em tocas seguras / que elas mesmas cavam / no solo da floresta. Elas caçam / pequenos animais / durante a noite. A raposa come / ratos, coelhos / e frutas silvestres. Suas orelhas são pontudas / e ajudam a ouvir / qualquer barulho de longe.",
     leiturabilidade: {
       flesch: 83,
       classificacao: "Fácil",
@@ -101,12 +131,12 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 7,
+    id: 9,
     title: "Os Golfinhos Amigos",
     nivel: "Fácil",
     cor: "teal",
     text: "Os golfinhos são animais marinhos muito inteligentes e carinhosos. Eles respiram o mesmo ar que nós através de um orifício no alto da cabeça. Os golfinhos vivem em grupos unidos chamados cardumes. Eles se comunicam através de estalidos e assobios especiais. Golfinhos comem peixes e lulas frescas. Eles saltam sobre as ondas com muita agilidade.",
-    syntacticText: "Os golfinhos / são animais marinhos / muito inteligentes e carinhosos. Eles respiram o mesmo ar / que nós / através de um orifício / no alto da cabeça. Os golfinhos vivem / em grupos unidos / chamados cardumes. Eles se comunicam / através de estalidos / e assobios especiais. Golfinhos comem / peixes / e lulas frescas. Eles saltam / sobre as ondas / com muita agilidade.",
+    syntacticText: "Os golfinhos / são animais marinhos muito inteligentes e carinhosos. Eles respiram o mesmo ar / que nós / através de um orifício / no alto da cabeça. Os golfinhos vivem / em grupos unidos / chamados cardumes. Eles se comunicam / através de estalidos / e assobios especiais. Golfinhos comem / peixes / e lulas frescas. Eles saltam / sobre as ondas / com muita agilidade.",
     leiturabilidade: {
       flesch: 81,
       classificacao: "Fácil",
@@ -116,12 +146,12 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 8,
+    id: 10,
     title: "Luna e a Adoção de Mia",
     nivel: "Fácil",
     cor: "teal",
     text: "Luna ia caminhando para a casa de sua avó numa tarde ensolarada. No meio do caminho, ela ouviu um miado bem baixinho. Era um filhotinho de gato perto de uma caixa de papelão. O gato era todo preto, com as quatro patinhas brancas. Luna pegou o bichinho no colo com carinho. Ele começou a ronronar de alívio. A família acolheu o gatinho com amor e deu a ele o nome de Mia.",
-    syntacticText: "Luna ia caminhando / para a casa de sua avó / numa tarde ensolarada. No meio do caminho, / ela ouviu / um miado bem baixinho. Era um filhotinho de gato / perto de uma caixa / de papelão. O gato era todo preto, / com as quatro patinhas / brancas. Luna pegou o bichinho / no colo / com carinho. Ele começou a ronronar / de alívio. A família acolheu o gatinho / com amor / e deu a ele / o nome de Mia.",
+    syntacticText: "Luna ia caminhando / para a casa de sua avó / numa tarde ensolarada. No meio do caminho, / ela ouviu / um miado bem baixinho. Era um filhotinho de gato / perto de uma caixa de papelão. O gato era todo preto, / com as quatro patinhas brancas. Luna pegou o bichinho / no colo / com carinho. Ele começou a ronronar / de alívio. A família acolheu o gatinho / com amor / e deu a ele / o nome de Mia.",
     leiturabilidade: {
       flesch: 80,
       classificacao: "Fácil",
@@ -131,12 +161,12 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 9,
+    id: 11,
     title: "Um Passeio no Zoológico",
     nivel: "Fácil",
     cor: "teal",
     text: "João visitou o zoológico da cidade com seus pais no domingo. O primeiro animal que viram foi a família de macacos travessos, que pulavam de galho em galho comendo bananas. Depois avistaram um leão imponente repousando sobre as pedras. Em seguida, os pinguins encantaram a todos nadando velozes na água gelada. No fim do passeio, João alimentou a girafa e voltou para casa muito feliz.",
-    syntacticText: "João visitou / o zoológico da cidade / com seus pais no domingo. O primeiro animal que viram / foi a família / de macacos travessos, / que pulavam / de galho em galho / comendo bananas. Depois / avistaram um leão imponente / repousando sobre as pedras. Em seguida, / os pinguins / encantaram a todos / nadando velozes / na água gelada. No fim do passeio, / João alimentou a girafa / e voltou para casa / muito feliz.",
+    syntacticText: "João visitou / o zoológico da cidade / com seus pais no domingo. O primeiro animal que viram / foi a família de macacos travessos, / que pulavam / de galho em galho / comendo bananas. Depois / avistaram um leão imponente / repousando sobre as pedras. Em seguida, / os pinguins / encantaram a todos / nadando velozes / na água gelada. No fim do passeio, / João alimentou a girafa / e voltou para casa / muito feliz.",
     leiturabilidade: {
       flesch: 78,
       classificacao: "Fácil",
@@ -146,12 +176,12 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 10,
+    id: 12,
     title: "As Abelhas Operárias",
     nivel: "Fácil",
     cor: "teal",
     text: "As abelhas são insetos fundamentais para a vida no planeta Terra. Dentro da colmeia organizada, cada abelha tem sua função bem definida. As abelhas operárias voam de flor em flor recolhendo néctar e pólen dourado. Ao fazerem isso, elas polinizam as plantas para que produzam frutos saborosos. Com o néctar das flores, as abelhas produzem o mel doce e saudável que nós consumimos.",
-    syntacticText: "As abelhas / são insetos fundamentais / para a vida / no planeta Terra. Dentro da colmeia organizada, / cada abelha / tem sua função / bem definida. As abelhas operárias / voam de flor em flor / recolhendo néctar / e pólen dourado. Ao fazerem isso, / elas polinizam as plantas / para que produzam / frutos saborosos. Com o néctar das flores, / as abelhas produzem / o mel doce e saudável / que nós consumimos.",
+    syntacticText: "As abelhas / são insetos fundamentais / para a vida / no planeta Terra. Dentro da colmeia organizada, / cada abelha / tem sua função bem definida. As abelhas operárias / voam de flor em flor / recolhendo néctar / e pólen dourado. Ao fazerem isso, / elas polinizam as plantas / para que produzam / frutos saborosos. Com o néctar das flores, / as abelhas produzem / o mel doce e saudável / que nós consumimos.",
     leiturabilidade: {
       flesch: 76,
       classificacao: "Fácil",
@@ -160,13 +190,43 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
       tempoLeituraSegundos: 32
     }
   },
+  {
+    id: 13,
+    title: "O Esquilo e as Nozes",
+    nivel: "Fácil",
+    cor: "teal",
+    text: "Tico é um esquilo curioso que mora no topo de uma castanheira frondosa. Durante o outono dourado, ele percorre os galhos recolhendo sementes e nozes saborosas. Tico esconde seu tesouro em pequenos buracos no tronco para se alimentar durante o inverno frio. Ele tem dentes afiados e uma cauda espessa que ajuda a manter o equilíbrio. Todos os animais da mata admiram a dedicação do pequeno esquilo.",
+    syntacticText: "Tico é um esquilo curioso / que mora no topo / de uma castanheira frondosa. Durante o outono dourado, / ele percorre os galhos / recolhendo sementes / e nozes saborosas. Tico esconde seu tesouro / em pequenos buracos no tronco / para se alimentar / durante o inverno frio. Ele tem dentes afiados / e uma cauda espessa / que ajuda a manter o equilíbrio. Todos os animais da mata / admiram a dedicação / do pequeno esquilo.",
+    leiturabilidade: {
+      flesch: 81,
+      classificacao: "Fácil",
+      anoEscolar: "3º e 4º ano",
+      palavras: 67,
+      tempoLeituraSegundos: 33
+    }
+  },
+  {
+    id: 14,
+    title: "A Horta da Escola",
+    nivel: "Fácil",
+    cor: "teal",
+    text: "Os alunos do terceiro ano criaram uma horta colorida no pátio ensolarado da escola. Cada turma ficou responsável por plantar um canteiro diferente com cenouras, alfaces e tomates vermelhinhos. Todos os dias pela manhã, as crianças regam a terra preta e retiram as ervas daninhas com cuidado. Ver as plantinhas crescendo fortes ensina o valor da paciência e do trabalho em equipe. Na hora da colheita, todos comemoram com uma salada fresquinha no almoço.",
+    syntacticText: "Os alunos do terceiro ano / criaram uma horta colorida / no pátio ensolarado da escola. Cada turma / ficou responsável / por plantar um canteiro diferente / com cenouras, alfaces / e tomates vermelhinhos. Todos os dias pela manhã, / as crianças regam a terra preta / e retiram as ervas daninhas / com cuidado. Ver as plantinhas crescendo fortes / ensina o valor da paciência / e do trabalho em equipe. Na hora da colheita, / todos comemoram / com uma salada fresquinha / no almoço.",
+    leiturabilidade: {
+      flesch: 79,
+      classificacao: "Fácil",
+      anoEscolar: "3º e 4º ano",
+      palavras: 71,
+      tempoLeituraSegundos: 35
+    }
+  },
 
   // =========================================================================
   // NÍVEL 3: INTERMEDIÁRIO (Fluência Textual & Informativa / 5º e 6º Ano)
   // Flesch: 62 a 74 | Subordinação leve, vocabulário informativo, pontuação variada
   // =========================================================================
   {
-    id: 11,
+    id: 15,
     title: "A Lua - Nosso Satélite Natural",
     nivel: "Intermediário",
     cor: "blue",
@@ -181,12 +241,12 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 12,
+    id: 16,
     title: "O Sistema Solar",
     nivel: "Intermediário",
     cor: "blue",
     text: "O Sistema Solar é formado pelo Sol e todos os corpos celestes que giram ao seu redor. Existem oito planetas principais: Mercúrio, Vênus, Terra, Marte, Júpiter, Saturno, Urano e Netuno. O Sol é uma estrela gigantesca que fornece luz e calor indispensáveis para a manutenção da vida. Júpiter se destaca como o maior planeta de todos, enquanto Mercúrio é o menor e mais próximo do Sol. Além dos planetas, o sistema abriga luas fascinantes, asteroides e cometas brilhantes.",
-    syntacticText: "O Sistema Solar / é formado pelo Sol / e todos os corpos celestes / que giram ao seu redor. Existem oito planetas principais: / Mercúrio, Vênus, / Terra, Marte, / Júpiter, Saturno, / Urano e Netuno. O Sol / é uma estrela gigantesca / que fornece luz e calor / indispensáveis / para a manutenção da vida. Júpiter se destaca / como o maior planeta de todos, / enquanto Mercúrio é o menor / e mais próximo do Sol. Além dos planetas, / o sistema abriga luas fascinantes, / asteroides / e cometas brilhantes.",
+    syntacticText: "O Sistema Solar / é formado pelo Sol / e todos os corpos celestes / que giram ao seu redor. Existem oito planetas principais: / Mercúrio, Vênus, / Terra, Marte, / Júpiter, Saturno, / Urano e Netuno. O Sol / é uma estrela gigantesca / que fornece luz e calor indispensáveis / para a manutenção da vida. Júpiter se destaca / como o maior planeta de todos, / enquanto Mercúrio é o menor / e mais próximo do Sol. Além dos planetas, / o sistema abriga luas fascinantes, / asteroides / e cometas brilhantes.",
     leiturabilidade: {
       flesch: 70,
       classificacao: "Intermediário",
@@ -196,12 +256,12 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 13,
+    id: 17,
     title: "O Tamanduá-Bandeira e o Cerrado",
     nivel: "Intermediário",
     cor: "blue",
     text: "O tamanduá-bandeira é um mamífero típico da América do Sul, encontrado principalmente nas savanas do Cerrado brasileiro. Esse animal peculiar pode medir até 2 metros de comprimento, incluindo sua cauda longa e peluda. Sua principal característica biológica é o focinho alongado e a língua extensível que alcança sessenta centímetros. O tamanduá alimenta-se de formigas e cupins, consumindo até trinta mil insetos diariamente. Suas garras fortes abrem os ninhos sem destruir a colônia por completo.",
-    syntacticText: "O tamanduá-bandeira / é um mamífero típico / da América do Sul, / encontrado principalmente / nas savanas do Cerrado brasileiro. Esse animal peculiar / pode medir / até 2 metros de comprimento, / incluindo sua cauda / longa e peluda. Sua principal característica biológica / é o focinho alongado / e a língua extensível / que alcança sessenta centímetros. O tamanduá alimenta-se / de formigas e cupins, / consumindo até / trinta mil insetos diariamente. Suas garras fortes / abrem os ninhos / sem destruir a colônia / por completo.",
+    syntacticText: "O tamanduá-bandeira / é um mamífero típico / da América do Sul, / encontrado principalmente / nas savanas do Cerrado brasileiro. Esse animal peculiar / pode medir / até 2 metros de comprimento, / incluindo sua cauda longa e peluda. Sua principal característica biológica / é o focinho alongado / e a língua extensível / que alcança sessenta centímetros. O tamanduá alimenta-se / de formigas e cupins, / consumindo até / trinta mil insetos diariamente. Suas garras fortes / abrem os ninhos / sem destruir a colônia / por completo.",
     leiturabilidade: {
       flesch: 68,
       classificacao: "Intermediário",
@@ -211,12 +271,12 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 14,
+    id: 18,
     title: "Jogos e Tradições Indígenas",
     nivel: "Intermediário",
     cor: "blue",
     text: "Os povos originários do Brasil preservam uma rica tradição de jogos coletivos e brincadeiras esportivas. A peteca, por exemplo, foi criada pelos indígenas e atualmente encanta atletas em várias partes do país. Outro costume tradicional é a corrida de tora, onde grupos fortes carregam troncos pesados de palmeiras em trajetos desafiadores. As crianças indígenas praticam arco e flecha com precisão. Essas práticas corporais ensinam a união da comunidade e o profundo respeito com o meio ambiente.",
-    syntacticText: "Os povos originários do Brasil / preservam uma rica tradição / de jogos coletivos / e brincadeiras esportivas. A peteca, por exemplo, / foi criada pelos indígenas / e atualmente encanta atletas / em várias partes do país. Outro costume tradicional / é a corrida de tora, / onde grupos fortes / carregam troncos pesados / de palmeiras / em trajetos desafiadores. As crianças indígenas / praticam arco e flecha com precisão. Essas práticas corporais / ensinam a união da comunidade / e o profundo respeito / com o meio ambiente.",
+    syntacticText: "Os povos originários do Brasil / preservam uma rica tradição / de jogos coletivos / e brincadeiras esportivas. A peteca, por exemplo, / foi criada pelos indígenas / e atualmente encanta atletas / em várias partes do país. Outro costume tradicional / é a corrida de tora, / onde grupos fortes carregam / troncos pesados de palmeiras / em trajetos desafiadores. As crianças indígenas / praticam arco e flecha com precisão. Essas práticas corporais / ensinam a união da comunidade / e o profundo respeito / com o meio ambiente.",
     leiturabilidade: {
       flesch: 67,
       classificacao: "Intermediário",
@@ -226,7 +286,7 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 15,
+    id: 19,
     title: "As Tartarugas Marinhas",
     nivel: "Intermediário",
     cor: "blue",
@@ -240,13 +300,43 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
       tempoLeituraSegundos: 36
     }
   },
+  {
+    id: 20,
+    title: "O Mistério dos Corais Marinhos",
+    nivel: "Intermediário",
+    cor: "blue",
+    text: "Os recifes de corais são verdadeiras cidades subaquáticas que abrigam um quarto de todas as espécies marinhas conhecidas. Apesar de parecerem rochas coloridas ou plantas exóticas, os corais são animais minúsculos chamados pólipos, que vivem em colônias milenares. Eles constroem esqueletos rígidos de calcário que formam barreiras protetoras contra as fortes ondas costeiras. Além de preservar o litoral contra a erosão, esses ecossistemas fornecem alimento e abrigo seguro para cardumes multicoloridos, estrelas-do-mar e polvos inteligentes.",
+    syntacticText: "Os recifes de corais / são verdadeiras cidades subaquáticas / que abrigam um quarto / de todas as espécies marinhas conhecidas. Apesar de parecerem rochas coloridas / ou plantas exóticas, / os corais são animais minúsculos / chamados pólipos, / que vivem em colônias milenares. Eles constroem esqueletos rígidos / de calcário / que formam barreiras protetoras / contra as fortes ondas costeiras. Além de preservar o litoral / contra a erosão, / esses ecossistemas fornecem alimento / e abrigo seguro / para cardumes multicoloridos, / estrelas-do-mar / e polvos inteligentes.",
+    leiturabilidade: {
+      flesch: 68,
+      classificacao: "Intermediário",
+      anoEscolar: "5º e 6º ano",
+      palavras: 76,
+      tempoLeituraSegundos: 38
+    }
+  },
+  {
+    id: 21,
+    title: "A Invenção da Escrita",
+    nivel: "Intermediário",
+    cor: "blue",
+    text: "A invenção da escrita pelos povos sumérios, há mais de cinco mil anos na Mesopotâmia, marcou o início da história registrada da humanidade. Inicialmente, eles utilizavam cunhas de bambu para gravar símbolos simples em tabuletas de argila úmida, técnica denominada escrita cuneiforme. Essa tecnologia revolucionária permitiu registrar colheitas abundantes, leis comunitárias e lendas heroicas que antes dependiam unicamente da memória oral. Graças ao poder da escrita, o conhecimento dos povos antigos atravessou milênios e transformou para sempre a civilização global.",
+    syntacticText: "A invenção da escrita pelos povos sumérios, / há mais de cinco mil anos / na Mesopotâmia, / marcou o início / da história registrada da humanidade. Inicialmente, / eles utilizavam cunhas de bambu / para gravar símbolos simples / em tabuletas de argila úmida, / técnica denominada escrita cuneiforme. Essa tecnologia revolucionária / permitiu registrar / colheitas abundantes, / leis comunitárias / e lendas heroicas / que antes dependiam unicamente / da memória oral. Graças ao poder da escrita, / o conhecimento dos povos antigos / atravessou milênios / e transformou para sempre / a civilização global.",
+    leiturabilidade: {
+      flesch: 66,
+      classificacao: "Intermediário",
+      anoEscolar: "5º e 6º ano",
+      palavras: 76,
+      tempoLeituraSegundos: 38
+    }
+  },
 
   // =========================================================================
   // NÍVEL 4: AVANÇADO (Períodos Compostos & Vocabulário Rico / 7º ao 9º Ano)
   // Flesch: 48 a 59 | Orações subordinadas, dados históricos e científicos
   // =========================================================================
   {
-    id: 16,
+    id: 22,
     title: "As Cordilheiras do Himalaia",
     nivel: "Avançado",
     cor: "purple",
@@ -261,12 +351,12 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 17,
+    id: 23,
     title: "A Floresta Amazônica e o Clima",
     nivel: "Avançado",
     cor: "purple",
     text: "A Floresta Amazônica constitui o maior bioma tropical úmido da Terra, cobrindo uma extensão de cinco milhões e meio de quilômetros quadrados através de nove países sul-americanos. A bacia hidrográfica amazônica abriga o mais volumoso curso de água doce do planeta, além de concentrar a mais densa biodiversidade já catalogada pela ciência moderna. Os rios voadores, correntes de vapor suspensas originadas da transpiração das árvores frondosas, transportam chuvas torrenciais vitais para a agricultura e para a estabilidade térmica de todo o hemisfério sul.",
-    syntacticText: "A Floresta Amazônica / constitui o maior bioma / tropical úmido da Terra, / cobrindo uma extensão / de cinco milhões e meio / de quilômetros quadrados / através de nove países / sul-americanos. A bacia hidrográfica amazônica / abriga o mais volumoso / curso de água doce / do planeta, / além de concentrar / a mais densa biodiversidade / já catalogada pela ciência moderna. Os rios voadores, / correntes de vapor suspensas / originadas da transpiração / das árvores frondosas, / transportam chuvas torrenciais / vitais para a agricultura / e para a estabilidade térmica / de todo o hemisfério sul.",
+    syntacticText: "A Floresta Amazônica / constitui o maior bioma tropical úmido / da Terra, / cobrindo uma extensão / de cinco milhões e meio de quilômetros quadrados / através de nove países sul-americanos. A bacia hidrográfica amazônica / abriga o mais volumoso curso de água doce / do planeta, / além de concentrar / a mais densa biodiversidade / já catalogada pela ciência moderna. Os rios voadores, / correntes de vapor suspensas / originadas da transpiração / das árvores frondosas, / transportam chuvas torrenciais vitais / para a agricultura / e para a estabilidade térmica / de todo o hemisfério sul.",
     leiturabilidade: {
       flesch: 52,
       classificacao: "Avançado",
@@ -276,7 +366,7 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 18,
+    id: 24,
     title: "O Observatório do Deserto de Atacama",
     nivel: "Avançado",
     cor: "purple",
@@ -291,7 +381,7 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 19,
+    id: 25,
     title: "As Memórias do Diário do Bisavô",
     nivel: "Avançado",
     cor: "purple",
@@ -306,7 +396,7 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 20,
+    id: 26,
     title: "A Dança das Marés Oceânicas",
     nivel: "Avançado",
     cor: "purple",
@@ -320,6 +410,36 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
       tempoLeituraSegundos: 38
     }
   },
+  {
+    id: 27,
+    title: "A Geometria dos Favos de Mel",
+    nivel: "Avançado",
+    cor: "purple",
+    text: "A arquitetura hexagonal dos favos construídos pelas abelhas operárias instiga matemáticos e biólogos desde a Antiguidade clássica. Ao erguer alvéolos de cera com formato estritamente hexagonal, a colônia obtém a máxima área de armazenamento de mel utilizando a menor quantidade possível de material biológico. Esse fenômeno, conhecido na geometria como o teorema do favo de mel, demonstra a formidável eficiência evolutiva dos insetos sociais. Na engenharia aeroespacial e na construção civil contemporânea, estruturas inspiradas nessa configuração geométrica são amplamente empregadas para conferir extrema rigidez mecânica com leveza estrutural.",
+    syntacticText: "A arquitetura hexagonal / dos favos construídos pelas abelhas operárias / instiga matemáticos e biólogos / desde a Antiguidade clássica. Ao erguer alvéolos de cera / com formato estritamente hexagonal, / a colônia obtém / a máxima área de armazenamento de mel / utilizando a menor quantidade possível / de material biológico. Esse fenômeno, / conhecido na geometria / como o teorema do favo de mel, / demonstra a formidável eficiência evolutiva / dos insetos sociais. Na engenharia aeroespacial / e na construção civil contemporânea, / estruturas inspiradas / nessa configuração geométrica / são amplamente empregadas / para conferir extrema rigidez mecânica / com leveza estrutural.",
+    leiturabilidade: {
+      flesch: 51,
+      classificacao: "Avançado",
+      anoEscolar: "7º ao 9º ano",
+      palavras: 83,
+      tempoLeituraSegundos: 41
+    }
+  },
+  {
+    id: 28,
+    title: "A Rota da Seda e o Intercâmbio Cultural",
+    nivel: "Avançado",
+    cor: "purple",
+    text: "A Rota da Seda constituiu uma complexa malha de itinerários comerciais e marítimos que interligou a Ásia Oriental ao Mar Mediterrâneo durante mais de um milênio. Por meio de caravanas corajosas que cruzavam desertos inclementes e desfiladeiros perigosos, mercadorias preciosas como seda chinesa, especiarias exóticas, vidros venezianos e papel artesanal transitavam entre civilizações distantes. Contudo, o impacto mais duradouro dessas expedições residiu no intenso intercâmbio filosófico, artístico e científico, responsável por aproximar tradições díspares e acelerar a difusão da medicina e da matemática no mundo medieval.",
+    syntacticText: "A Rota da Seda / constituiu uma complexa malha / de itinerários comerciais e marítimos / que interligou a Ásia Oriental / ao Mar Mediterrâneo / durante mais de um milênio. Por meio de caravanas corajosas / que cruzavam desertos inclementes / e desfiladeiros perigosos, / mercadorias preciosas / como seda chinesa, especiarias exóticas, / vidros venezianos / e papel artesanal / transitavam entre civilizações distantes. Contudo, / o impacto mais duradouro dessas expedições / residiu no intenso intercâmbio filosófico, / artístico e científico, / responsável por aproximar tradições díspares / e acelerar a difusão / da medicina e da matemática / no mundo medieval.",
+    leiturabilidade: {
+      flesch: 49,
+      classificacao: "Avançado",
+      anoEscolar: "7º ao 9º ano",
+      palavras: 82,
+      tempoLeituraSegundos: 41
+    }
+  },
 
   // =========================================================================
   // NÍVEL 5: ENSINO MÉDIO (Treino de Fluência, Prosódia e Ritmo / 14 a 18 Anos)
@@ -327,7 +447,7 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
   // Conteúdo moderno e equilibrado, focado em fluência sem barreira cognitiva
   // =========================================================================
   {
-    id: 21,
+    id: 29,
     title: "A Ciência do Foco e a Era Digital",
     nivel: "Ensino Médio",
     cor: "rose",
@@ -342,7 +462,7 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 22,
+    id: 30,
     title: "O Despertador e as Manhãs de Chuva",
     nivel: "Ensino Médio",
     cor: "rose",
@@ -357,7 +477,7 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 23,
+    id: 31,
     title: "A Busca por Mundos Habitáveis",
     nivel: "Ensino Médio",
     cor: "rose",
@@ -372,12 +492,12 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 24,
+    id: 32,
     title: "A Inteligência Artificial e a Criatividade",
     nivel: "Ensino Médio",
     cor: "rose",
     text: "A rápida expansão dos algoritmos inteligentes tem transformado a maneira como produzimos imagens, compomos músicas e estruturamos ideias cotidianas. No entanto, longe de substituir a sensibilidade humana, essas ferramentas tecnológicas funcionam como amplificadores do nosso potencial criativo. Uma máquina é capaz de processar volumes monumentais de informações em frações de segundo, mas a interpretação emocional e a originalidade continuam sendo traços genuinamente humanos. No ambiente dos estudos e do trabalho futuro, a cooperação entre inteligência artificial e raciocínio crítico será a habilidade mais valorizada.",
-    syntacticText: "A rápida expansão / dos algoritmos inteligentes / tem transformado a maneira / como produzimos imagens, / compomos músicas / e estruturamos ideias cotidianas. No entanto, / longe de substituir a sensibilidade humana, / essas ferramentas tecnológicas funcionam / como amplificadores / do nosso potencial criativo. Uma máquina é capaz / de processar volumes monumentais / de informações / em frações de segundo, / mas a interpretação emocional / e a originalidade / continuam sendo traços / genuinamente humanos. No ambiente dos estudos / e do trabalho futuro, / a cooperação / entre inteligência artificial / e raciocínio crítico / será a habilidade / mais valorizada.",
+    syntacticText: "A rápida expansão / dos algoritmos inteligentes / tem transformado a maneira / como produzimos imagens, / compomos músicas / e estruturamos ideias cotidianas. No entanto, / longe de substituir a sensibilidade humana, / essas ferramentas tecnológicas funcionam / como amplificadores / do nosso potencial criativo. Uma máquina é capaz / de processar volumes monumentais / de informações / em frações de segundo, / mas a interpretação emocional / e a originalidade / continuam sendo / traços genuinamente humanos. No ambiente dos estudos / e do trabalho futuro, / a cooperação / entre inteligência artificial / e raciocínio crítico / será a habilidade mais valorizada.",
     leiturabilidade: {
       flesch: 54,
       classificacao: "Ensino Médio",
@@ -387,7 +507,7 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
     }
   },
   {
-    id: 25,
+    id: 33,
     title: "O Poder do Ritmo e da Poesia Urbana",
     nivel: "Ensino Médio",
     cor: "rose",
@@ -400,6 +520,35 @@ export const BIBLIOTECA_TEXTOS: TextoFluencia[] = [
       palavras: 83,
       tempoLeituraSegundos: 41
     }
+  },
+  {
+    id: 34,
+    title: "O Tempo Psicológico e a Memória Afetiva",
+    nivel: "Ensino Médio",
+    cor: "rose",
+    text: "A percepção do transcorrer das horas raramente obedece à frieza dos ponteiros do relógio mecânico. Em momentos de tédio ou expectativa ansiosa, cada minuto parece arrastar-se com lentidão quase infinita; por outro lado, durante vivências prazerosas e conversas com amigos íntimos, as horas esvaem-se sem que nos demos conta. A neurociência explica que nosso cérebro mede o tempo através da densidade de novas memórias armazenadas: quando acumulamos experiências ricas em emoção e novidade, o passado adquire uma sensação de amplitude duradoura e significado pessoal profundo.",
+    syntacticText: "A percepção do transcorrer das horas / raramente obedece à frieza / dos ponteiros do relógio mecânico. Em momentos de tédio / ou expectativa ansiosa, / cada minuto / parece arrastar-se / com lentidão quase infinita; / por outro lado, / durante vivências prazerosas / e conversas com amigos íntimos, / as horas esvaem-se / sem que nos demos conta. A neurociência explica / que nosso cérebro mede o tempo / através da densidade / de novas memórias armazenadas: / quando acumulamos / experiências ricas em emoção e novidade, / o passado adquire / uma sensação de amplitude duradoura / e significado pessoal profundo.",
+    leiturabilidade: {
+      flesch: 58,
+      classificacao: "Ensino Médio",
+      anoEscolar: "Ensino Médio",
+      palavras: 83,
+      tempoLeituraSegundos: 41
+    }
+  },
+  {
+    id: 35,
+    title: "A Música e a Biologia Cerebral",
+    nivel: "Ensino Médio",
+    cor: "rose",
+    text: "O impacto visceral que uma melodia marcante exerce sobre nosso ânimo é um dos fenômenos mais fascinantes da fisiologia humana. Ao escutarmos acordes harmoniosos e compassos rítmicos, redes neurais complexas ativam simultaneamente os centros de processamento auditivo, memória e recompensa biológica, liberando dopamina na corrente sanguínea. Esse influxo neuroquímico desencadeia arrepios na pele, sincroniza os batimentos cardíacos com a pulsação musical e evoca lembranças nostálgicas com intensidade ímpar. A música prova ser uma linguagem universal capaz de transcender barreiras culturais e conectar corações humanos.",
+    syntacticText: "O impacto visceral / que uma melodia marcante exerce / sobre nosso ânimo / é um dos fenômenos mais fascinantes / da fisiologia humana. Ao escutarmos acordes harmoniosos / e compassos rítmicos, / redes neurais complexas / ativam simultaneamente / os centros de processamento auditivo, / memória e recompensa biológica, / liberando dopamina / na corrente sanguínea. Esse influxo neuroquímico / desencadeia arrepios na pele, / sincroniza os batimentos cardíacos / com a pulsação musical / e evoca lembranças nostálgicas / com intensidade ímpar. A música prova ser / uma linguagem universal / capaz de transcender barreiras culturais / e conectar corações humanos.",
+    leiturabilidade: {
+      flesch: 56,
+      classificacao: "Ensino Médio",
+      anoEscolar: "Ensino Médio",
+      palavras: 81,
+      tempoLeituraSegundos: 40
+    }
   }
 ];
-

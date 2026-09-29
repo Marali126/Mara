@@ -6,6 +6,7 @@ export const PERFIL_ALUNO_PADRAO: PerfilAluno = {
   escola: 'Colégio Integrado de Ensino',
   avaliador: 'Fga. Mara Daher',
   dataInicio: '01/09/2026',
+  dataAvaliacao: '29/09/2026',
   metaPPM: 115,
   observacoesGerais:
     'O aluno apresenta excelente resposta ao fatiamento sintático em grupos de palavras. Houve avanço consistente na entonação interrogativa e diminuição das pausas inadequadas no meio das orações. Recomenda-se manter o treino com textos de Flesch entre 60 e 70.'

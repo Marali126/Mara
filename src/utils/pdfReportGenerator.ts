@@ -86,30 +86,40 @@ export function gerarRelatorioPDF(options: GerarPdfOptions): jsPDF {
     }
   }
 
-  // Título e Subtítulo
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(15);
-  doc.setTextColor(15, 23, 42); // Slate-900
-  doc.text('RELATÓRIO DE EVOLUÇÃO EM FLUÊNCIA VERBAL', headerTextStartX, currentY + 5);
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.setTextColor(100, 116, 139); // Slate-500
-  doc.text(
-    'Treino de Prosódia Sintática, Ritmo Leitor e Decodificação Automatizada',
-    headerTextStartX,
-    currentY + 10
-  );
-
-  const dataEmissao = new Date().toLocaleDateString('pt-BR', {
+  const dataHoje = new Date().toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
   });
-  doc.setFontSize(8);
-  doc.text(`Data de Emissão: ${dataEmissao}  |  Doc ID: FL-${Date.now().toString().slice(-6)}`, headerTextStartX, currentY + 15);
+  const dataAvaliacao = perfil.dataAvaliacao || perfil.dataInicio || dataHoje;
 
-  currentY = Math.max(currentY + 22, currentY + 18);
+  // Título e Subtítulo
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(15, 23, 42); // Slate-900
+  doc.text('RELATÓRIO DE EVOLUÇÃO EM FLUÊNCIA VERBAL', headerTextStartX, currentY + 4);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(100, 116, 139); // Slate-500
+  doc.text(
+    'Treino de Prosódia Sintática, Ritmo Leitor e Decodificação Automatizada',
+    headerTextStartX,
+    currentY + 9
+  );
+
+  // DESTAQUE DO PACIENTE E DATA NO CABEÇALHO SUPERIOR
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9.5);
+  doc.setTextColor(180, 83, 9); // Amber-700
+  doc.text(`Paciente: ${perfil.nome || 'Não informado'}`, headerTextStartX, currentY + 14.5);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(71, 85, 105);
+  doc.text(`Data da Avaliação: ${dataAvaliacao}  •  Emissão: ${dataHoje}  •  Doc ID: FL-${Date.now().toString().slice(-6)}`, headerTextStartX, currentY + 19);
+
+  currentY = Math.max(currentY + 25, currentY + 22);
 
   // Linha divisória
   doc.setDrawColor(226, 232, 240); // Slate-200
@@ -118,16 +128,16 @@ export function gerarRelatorioPDF(options: GerarPdfOptions): jsPDF {
   currentY += 5;
 
   // ----------------------------------------------------
-  // SEÇÃO 1: IDENTIFICAÇÃO DO ALUNO / PACIENTE
+  // SEÇÃO 1: IDENTIFICAÇÃO DO PACIENTE / ALUNO E PROFISSIONAL
   // ----------------------------------------------------
   doc.setFillColor(248, 250, 252); // Slate-50
   doc.setDrawColor(203, 213, 225); // Slate-300
-  doc.roundedRect(margin, currentY, contentWidth, 23, 2, 2, 'FD');
+  doc.roundedRect(margin, currentY, contentWidth, 24, 2, 2, 'FD');
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
   doc.setTextColor(30, 41, 59);
-  doc.text('DADOS DO ALUNO E PROFISSIONAL RESPONSÁVEL', margin + 4, currentY + 5.5);
+  doc.text('DADOS DO PACIENTE E PROFISSIONAL RESPONSÁVEL', margin + 4, currentY + 5.5);
 
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
@@ -137,40 +147,44 @@ export function gerarRelatorioPDF(options: GerarPdfOptions): jsPDF {
   const col2X = margin + 68;
   const col3X = margin + 128;
 
-  // Linha 1 de dados
-  doc.text(`Aluno(a): `, col1X, currentY + 11);
+  // Linha 1 de dados: Paciente, Data da Avaliação, Meta
+  doc.text(`Paciente / Aluno(a): `, col1X, currentY + 11);
   doc.setFont('helvetica', 'bold');
-  doc.text(perfil.nome || 'Não informado', col1X + 14, currentY + 11);
+  doc.setTextColor(15, 23, 42);
+  doc.text(perfil.nome || 'Não informado', col1X + 27, currentY + 11);
 
+  doc.setTextColor(51, 65, 85);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Série/Turma: `, col2X, currentY + 11);
+  doc.text(`Data da Avaliação: `, col2X, currentY + 11);
   doc.setFont('helvetica', 'bold');
-  doc.text(perfil.anoEscolar || 'Não informado', col2X + 19, currentY + 11);
+  doc.setTextColor(180, 83, 9); // Amber-700
+  doc.text(dataAvaliacao, col2X + 25, currentY + 11);
 
+  doc.setTextColor(51, 65, 85);
   doc.setFont('helvetica', 'normal');
   doc.text(`Meta de Fluência: `, col3X, currentY + 11);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(180, 83, 9); // Amber-700
   doc.text(`${perfil.metaPPM || 110} PPM`, col3X + 26, currentY + 11);
 
-  // Linha 2 de dados
+  // Linha 2 de dados: Instituição/Clínica, Avaliador(a), Série/Turma
   doc.setTextColor(51, 65, 85);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Instituição: `, col1X, currentY + 17);
+  doc.text(`Instituição / Clínica: `, col1X, currentY + 17.5);
   doc.setFont('helvetica', 'bold');
-  doc.text(perfil.escola || 'Não informado', col1X + 16, currentY + 17);
+  doc.text(perfil.escola || 'Não informado', col1X + 27, currentY + 17.5);
 
   doc.setFont('helvetica', 'normal');
-  doc.text(`Avaliador(a): `, col2X, currentY + 17);
+  doc.text(`Profissional / Avaliador: `, col2X, currentY + 17.5);
   doc.setFont('helvetica', 'bold');
-  doc.text(perfil.avaliador || 'Não informado', col2X + 19, currentY + 17);
+  doc.text(perfil.avaliador || 'Não informado', col2X + 32, currentY + 17.5);
 
   doc.setFont('helvetica', 'normal');
-  doc.text(`Data de Início: `, col3X, currentY + 17);
+  doc.text(`Série / Turma: `, col3X, currentY + 17.5);
   doc.setFont('helvetica', 'bold');
-  doc.text(perfil.dataInicio || dataEmissao, col3X + 20, currentY + 17);
+  doc.text(perfil.anoEscolar || 'Não informado', col3X + 20, currentY + 17.5);
 
-  currentY += 27;
+  currentY += 28;
 
   // ----------------------------------------------------
   // SEÇÃO 2: QUADRO DE INDICADORES GLOBAIS DE DESEMPENHO (KPIs)
@@ -455,7 +469,7 @@ export function gerarRelatorioPDF(options: GerarPdfOptions): jsPDF {
     doc.line(margin, pageHeight - 9, pageWidth - margin, pageHeight - 9);
 
     doc.text(
-      'Treino de Fluência Verbal & Prosódia Sintática  •  Relatório Técnico de Progresso',
+      `Fluência Verbal & Prosódia  •  Paciente: ${perfil.nome || 'Não informado'}  •  Data: ${dataAvaliacao}`,
       margin,
       pageHeight - 5
     );

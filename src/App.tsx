@@ -39,7 +39,9 @@ import {
   Type,
   ChevronDown,
   ChevronUp,
-  FileText
+  FileText,
+  User,
+  Calendar
 } from 'lucide-react';
 
 export default function App() {
@@ -1373,6 +1375,52 @@ export default function App() {
             </button>
           </div>
         </header>
+
+        {/* BARRA DE IDENTIFICAÇÃO RÁPIDA: PACIENTE & DATA DA AVALIAÇÃO */}
+        <div className="bg-gradient-to-r from-amber-100/90 via-amber-50 to-amber-100/90 border-2 border-amber-300/80 rounded-2xl p-2.5 sm:px-4 sm:py-2 flex flex-wrap items-center justify-between gap-2.5 shadow-2xs">
+          <div className="flex items-center gap-2 flex-1 min-w-[260px]">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-950 shrink-0">
+              <User className="w-4 h-4 text-amber-700" />
+              <span>Paciente / Aluno:</span>
+            </div>
+            <input
+              type="text"
+              value={perfilAluno.nome}
+              onChange={(e) => {
+                const novo = { ...perfilAluno, nome: e.target.value };
+                handleSalvarPerfil(novo);
+              }}
+              placeholder="Digite o nome do paciente..."
+              className="flex-1 max-w-sm px-3 py-1 text-xs font-bold bg-white border border-amber-300 rounded-xl text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-950 shrink-0">
+              <Calendar className="w-4 h-4 text-amber-700" />
+              <span>Data:</span>
+            </div>
+            <input
+              type="text"
+              value={perfilAluno.dataAvaliacao || perfilAluno.dataInicio || new Date().toLocaleDateString('pt-BR')}
+              onChange={(e) => {
+                const novo = { ...perfilAluno, dataAvaliacao: e.target.value };
+                handleSalvarPerfil(novo);
+              }}
+              placeholder="DD/MM/AAAA"
+              className="w-28 text-center px-2 py-1 text-xs font-bold bg-white border border-amber-300 rounded-xl text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
+            />
+
+            <button
+              onClick={() => setMostrarRelatorio(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs"
+              title="Abrir o relatório de fluência com o nome e data deste paciente"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Gerar Relatório</span>
+            </button>
+          </div>
+        </div>
 
         {/* NOTIFICAÇÃO DE CONCLUSÃO DE TREINO */}
         {notificacaoConclusao && (
