@@ -16,6 +16,17 @@ import { FluencySpeechEngine } from './utils/speechEngine';
 import { PERFIL_ALUNO_PADRAO, SESSOES_PADRAO } from './data/defaultSessions';
 import { ModalRelatorioProgresso } from './components/ModalRelatorioProgresso';
 import {
+  carregarBancoPacientes,
+  salvarBancoPacientes,
+  obterIdPacienteAtivo,
+  definirIdPacienteAtivo,
+  iniciarNovoPaciente,
+  zerarSessoesDoPaciente,
+  alternarOuCriarPacientePorNome,
+  normalizarIdPaciente,
+  RegistroPaciente
+} from './utils/patientStorage';
+import {
   BookOpen,
   Volume2,
   Play,
@@ -41,7 +52,9 @@ import {
   ChevronUp,
   FileText,
   User,
-  Calendar
+  Calendar,
+  Plus,
+  Users
 } from 'lucide-react';
 
 export default function App() {
@@ -75,24 +88,34 @@ export default function App() {
   const [mostrarModalLogo, setMostrarModalLogo] = useState<boolean>(false);
   const logoFileInputRef = useRef<HTMLInputElement>(null);
 
-  // Gestão e Persistência do Relatório de Progresso e Sessões
+  // Gestão e Persistência do Banco de Pacientes e Relatórios Isolados por Pessoa
   const [mostrarRelatorio, setMostrarRelatorio] = useState<boolean>(false);
-  const [perfilAluno, setPerfilAluno] = useState<PerfilAluno>(() => {
-    try {
-      const p = localStorage.getItem('fluencia_perfil_aluno');
-      return p ? JSON.parse(p) : PERFIL_ALUNO_PADRAO;
-    } catch {
-      return PERFIL_ALUNO_PADRAO;
-    }
-  });
-  const [sessoesTreino, setSessoesTreino] = useState<SessaoTreino[]>(() => {
-    try {
-      const s = localStorage.getItem('fluencia_sessoes_treino');
-      return s ? JSON.parse(s) : SESSOES_PADRAO;
-    } catch {
-      return SESSOES_PADRAO;
-    }
-  });
+  const [bancoPacientes, setBancoPacientes] = useState<Record<string, RegistroPaciente>>(() => carregarBancoPacientes());
+  const [pacienteAtivoId, setPacienteAtivoId] = useState<string>(() => obterIdPacienteAtivo());
+
+  const pacienteAtivo = useMemo(() => {
+    return bancoPacientes[pacienteAtivoId] || Object.values(bancoPacientes)[0] || {
+      id: 'padrao',
+      nome: 'Paciente',
+      perfil: PERFIL_ALUNO_PADRAO,
+      sessoes: [],
+      ultimaModificacao: ''
+    };
+  }, [bancoPacientes, pacienteAtivoId]);
+
+  const perfilAluno = pacienteAtivo.perfil;
+  const sessoesTreino = pacienteAtivo.sessoes;
+
+  // Ref sempre sincronizada com o paciente ativo atual para callbacks de áudio
+  const pacienteAtivoIdRef = useRef(pacienteAtivoId);
+  pacienteAtivoIdRef.current = pacienteAtivoId;
+
+  // Estado controlado do campo de nome do paciente para evitar sobreposição prematura
+  const [nomeInput, setNomeInput] = useState(perfilAluno.nome);
+  useEffect(() => {
+    setNomeInput(perfilAluno.nome);
+  }, [perfilAluno.nome, pacienteAtivoId]);
+
   const [notificacaoConclusao, setNotificacaoConclusao] = useState<{
     texto: string;
     palavras: number;
@@ -237,38 +260,144 @@ export default function App() {
   const highlightModeRef = useRef(highlightMode);
   highlightModeRef.current = highlightMode;
 
-  const handleSalvarPerfil = (novoPerfil: PerfilAluno) => {
-    setPerfilAluno(novoPerfil);
-    try {
-      localStorage.setItem('fluencia_perfil_aluno', JSON.stringify(novoPerfil));
-    } catch {}
-  };
-
-  const handleAdicionarSessao = (sessao: SessaoTreino) => {
-    setSessoesTreino((prev) => {
-      const updated = [sessao, ...prev];
-      try {
-        localStorage.setItem('fluencia_sessoes_treino', JSON.stringify(updated));
-      } catch {}
+  const handleSalvarPerfil = (novoPerfil: PerfilAluno, targetId?: string) => {
+    const pId = targetId || pacienteAtivoIdRef.current;
+    setBancoPacientes((prev) => {
+      const atual = prev[pId] || {
+        id: pId,
+        nome: novoPerfil.nome,
+        perfil: novoPerfil,
+        sessoes: [],
+        ultimaModificacao: new Date().toISOString()
+      };
+      const updated: Record<string, RegistroPaciente> = {
+        ...prev,
+        [pId]: {
+          ...atual,
+          nome: novoPerfil.nome,
+          perfil: novoPerfil,
+          ultimaModificacao: new Date().toISOString()
+        }
+      };
+      salvarBancoPacientes(updated);
       return updated;
     });
   };
 
-  const handleRemoverSessao = (id: string) => {
-    setSessoesTreino((prev) => {
-      const updated = prev.filter((s) => s.id !== id);
-      try {
-        localStorage.setItem('fluencia_sessoes_treino', JSON.stringify(updated));
-      } catch {}
+  const handleAdicionarSessao = (sessao: SessaoTreino, targetId?: string) => {
+    const pId = targetId || pacienteAtivoIdRef.current;
+    setBancoPacientes((prev) => {
+      const atual = prev[pId];
+      if (!atual) return prev;
+      const updatedSessions = [sessao, ...atual.sessoes];
+      const updated: Record<string, RegistroPaciente> = {
+        ...prev,
+        [pId]: {
+          ...atual,
+          sessoes: updatedSessions,
+          ultimaModificacao: new Date().toISOString()
+        }
+      };
+      salvarBancoPacientes(updated);
+      return updated;
+    });
+  };
+
+  const handleRemoverSessao = (id: string, targetId?: string) => {
+    const pId = targetId || pacienteAtivoIdRef.current;
+    setBancoPacientes((prev) => {
+      const atual = prev[pId];
+      if (!atual) return prev;
+      const updatedSessions = atual.sessoes.filter((s) => s.id !== id);
+      const updated: Record<string, RegistroPaciente> = {
+        ...prev,
+        [pId]: {
+          ...atual,
+          sessoes: updatedSessions,
+          ultimaModificacao: new Date().toISOString()
+        }
+      };
+      salvarBancoPacientes(updated);
       return updated;
     });
   };
 
   const handleResetarSessoes = () => {
-    setSessoesTreino(SESSOES_PADRAO);
-    try {
-      localStorage.setItem('fluencia_sessoes_treino', JSON.stringify(SESSOES_PADRAO));
-    } catch {}
+    // Restaura dados de exemplo para demonstração
+    const pId = pacienteAtivoIdRef.current;
+    setBancoPacientes((prev) => {
+      const atual = prev[pId];
+      if (!atual) return prev;
+      const updated: Record<string, RegistroPaciente> = {
+        ...prev,
+        [pId]: {
+          ...atual,
+          sessoes: SESSOES_PADRAO,
+          ultimaModificacao: new Date().toISOString()
+        }
+      };
+      salvarBancoPacientes(updated);
+      return updated;
+    });
+  };
+
+  const handleZerarSessoes = () => {
+    const pId = pacienteAtivoIdRef.current;
+    const res = zerarSessoesDoPaciente(pId);
+    setBancoPacientes({ ...res.db });
+    setNotificacaoConclusao({
+      texto: `Relatório zerado com sucesso para "${res.perfil.nome}"! Histórico limpo.`,
+      palavras: 0,
+      ppm: 0
+    });
+    setTimeout(() => setNotificacaoConclusao(null), 3500);
+  };
+
+  const handleNovoPaciente = () => {
+    const res = iniciarNovoPaciente('', perfilAluno.avaliador);
+    setBancoPacientes({ ...res.db });
+    setPacienteAtivoId(res.id);
+    definirIdPacienteAtivo(res.id);
+    setNomeInput(res.perfil.nome);
+    setNotificacaoConclusao({
+      texto: `Novo paciente criado! Histórico zerado pronto para o treino.`,
+      palavras: 0,
+      ppm: 0
+    });
+    setTimeout(() => setNotificacaoConclusao(null), 4000);
+  };
+
+  const handleConfirmarNomePaciente = (novoNome: string) => {
+    const limpo = novoNome.trim();
+    if (!limpo) {
+      setNomeInput(perfilAluno.nome);
+      return;
+    }
+    // Compara se o nome digitado é diferente do paciente ativo atual
+    if (normalizarIdPaciente(limpo) !== normalizarIdPaciente(pacienteAtivo.nome)) {
+      const res = alternarOuCriarPacientePorNome(limpo, pacienteAtivoIdRef.current, perfilAluno.avaliador);
+      setBancoPacientes({ ...res.db });
+      setPacienteAtivoId(res.id);
+      definirIdPacienteAtivo(res.id);
+      setNomeInput(res.perfil.nome);
+      if (res.foiCriadoNovo) {
+        setNotificacaoConclusao({
+          texto: `Novo paciente "${res.perfil.nome}" iniciado! Relatório zerado (0 leituras).`,
+          palavras: 0,
+          ppm: 0
+        });
+        setTimeout(() => setNotificacaoConclusao(null), 4000);
+      }
+    } else {
+      // Mesmo paciente, apenas atualiza a grafia
+      const novoPerfil = { ...perfilAluno, nome: limpo };
+      handleSalvarPerfil(novoPerfil);
+    }
+  };
+
+  const handleSelecionarPaciente = (id: string) => {
+    definirIdPacienteAtivo(id);
+    setPacienteAtivoId(id);
   };
 
   // Processamento sintático e tokenização estruturada
@@ -327,7 +456,7 @@ export default function App() {
           observacoes: `Leitura concluída com ${calculatedPPM} PPM em ${elapsedSec}s.`
         };
 
-        handleAdicionarSessao(novaSessao);
+        handleAdicionarSessao(novaSessao, pacienteAtivoIdRef.current);
         setNotificacaoConclusao({
           texto: textoSelecionadoRef.current.title,
           palavras: words,
@@ -1425,23 +1554,61 @@ export default function App() {
           </div>
         </header>
 
-        {/* BARRA DE IDENTIFICAÇÃO RÁPIDA: PACIENTE & DATA DA AVALIAÇÃO */}
-        <div className="bg-gradient-to-r from-amber-100/90 via-amber-50 to-amber-100/90 border-2 border-amber-300/80 rounded-2xl p-2.5 sm:px-4 sm:py-2 flex flex-wrap items-center justify-between gap-2.5 shadow-2xs">
-          <div className="flex items-center gap-2 flex-1 min-w-[260px]">
+        {/* BARRA DE GESTÃO DO PACIENTE & DATA DA AVALIAÇÃO */}
+        <div className="bg-gradient-to-r from-amber-100/95 via-amber-50 to-amber-100/95 border-2 border-amber-300 rounded-2xl p-2.5 sm:px-4 sm:py-2 flex flex-wrap items-center justify-between gap-2.5 shadow-2xs">
+          <div className="flex items-center gap-2 flex-1 min-w-[280px] flex-wrap sm:flex-nowrap">
             <div className="flex items-center gap-1.5 text-xs font-bold text-amber-950 shrink-0">
               <User className="w-4 h-4 text-amber-700" />
-              <span>Paciente / Aluno:</span>
+              <span>Paciente:</span>
             </div>
+
+            {/* Dropdown de pacientes cadastrados */}
+            <select
+              value={pacienteAtivoId}
+              onChange={(e) => {
+                if (e.target.value === '__novo__') {
+                  handleNovoPaciente();
+                } else {
+                  handleSelecionarPaciente(e.target.value);
+                }
+              }}
+              className="px-2 py-1 text-xs font-bold bg-white border border-amber-300 rounded-xl text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs max-w-[160px] sm:max-w-[200px] truncate"
+              title="Alternar entre pacientes já cadastrados"
+            >
+              {Object.values(bancoPacientes).map((p) => (
+                <option key={p.id} value={p.id}>
+                  👤 {p.nome || 'Sem Nome'} ({p.sessoes.length} {p.sessoes.length === 1 ? 'leitura' : 'leituras'})
+                </option>
+              ))}
+              <option value="__novo__">➕ + Iniciar Novo Paciente...</option>
+            </select>
+
+            {/* Campo para editar ou digitar novo nome de paciente */}
             <input
               type="text"
-              value={perfilAluno.nome}
-              onChange={(e) => {
-                const novo = { ...perfilAluno, nome: e.target.value };
-                handleSalvarPerfil(novo);
+              value={nomeInput}
+              onChange={(e) => setNomeInput(e.target.value)}
+              onBlur={() => handleConfirmarNomePaciente(nomeInput)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  (e.target as HTMLInputElement).blur();
+                }
               }}
-              placeholder="Digite o nome do paciente..."
-              className="flex-1 max-w-sm px-3 py-1 text-xs font-bold bg-white border border-amber-300 rounded-xl text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
+              placeholder="Digite o nome..."
+              className="flex-1 min-w-[130px] max-w-xs px-3 py-1 text-xs font-bold bg-white border border-amber-300 rounded-xl text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
+              title="Digite o nome do paciente. Ao mudar de nome, o relatório zera automaticamente para o novo paciente!"
             />
+
+            {/* Botão Novo Paciente (Zera dados) */}
+            <button
+              type="button"
+              onClick={handleNovoPaciente}
+              className="px-2.5 py-1 bg-amber-200/90 hover:bg-amber-300 text-amber-950 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs flex items-center gap-1 shrink-0 border border-amber-300"
+              title="Iniciar ficha zerada para um novo paciente (0 leituras)"
+            >
+              <Plus className="w-3.5 h-3.5 text-amber-800" />
+              <span>Novo</span>
+            </button>
           </div>
 
           <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
@@ -1457,16 +1624,44 @@ export default function App() {
                 handleSalvarPerfil(novo);
               }}
               placeholder="DD/MM/AAAA"
-              className="w-28 text-center px-2 py-1 text-xs font-bold bg-white border border-amber-300 rounded-xl text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
+              className="w-24 text-center px-2 py-1 text-xs font-bold bg-white border border-amber-300 rounded-xl text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
             />
+
+            {/* Indicador de sessões deste paciente */}
+            <span
+              className={`px-2 py-0.5 rounded-lg text-[11px] font-bold ${
+                sessoesTreino.length > 0
+                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                  : 'bg-stone-100 text-stone-600 border border-stone-300'
+              }`}
+              title="Leituras registradas no histórico exclusivo deste paciente"
+            >
+              {sessoesTreino.length} {sessoesTreino.length === 1 ? 'leitura' : 'leituras'}
+            </span>
+
+            {/* Botão Zerar se houver leituras */}
+            {sessoesTreino.length > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm(`Deseja zerar as leituras de "${perfilAluno.nome}" para iniciar um novo relatório em branco?`)) {
+                    handleZerarSessoes();
+                  }
+                }}
+                className="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded-xl text-xs font-semibold transition-all cursor-pointer border border-red-200"
+                title="Zerar todas as leituras deste paciente"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            )}
 
             <button
               onClick={() => setMostrarRelatorio(true)}
               className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs"
-              title="Abrir o relatório de fluência com o nome e data deste paciente"
+              title="Abrir o relatório de fluência deste paciente"
             >
               <FileText className="w-3.5 h-3.5" />
-              <span>Gerar Relatório</span>
+              <span>Relatório</span>
             </button>
           </div>
         </div>
@@ -1936,6 +2131,16 @@ export default function App() {
           onAdicionarSessao={handleAdicionarSessao}
           onRemoverSessao={handleRemoverSessao}
           onResetarSessoes={handleResetarSessoes}
+          onZerarSessoes={handleZerarSessoes}
+          onNovoPaciente={handleNovoPaciente}
+          onTrocarOuCriarPaciente={handleConfirmarNomePaciente}
+          pacienteAtivoId={pacienteAtivoId}
+          todosPacientes={Object.values(bancoPacientes).map((p) => ({
+            id: p.id,
+            nome: p.nome || 'Sem Nome',
+            sessoesCount: p.sessoes.length
+          }))}
+          onSelecionarPaciente={handleSelecionarPaciente}
           textoAtual={textoSelecionado}
           logoPersonalizado={logoPersonalizado}
           speed={speed}

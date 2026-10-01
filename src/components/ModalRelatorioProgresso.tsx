@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { SessaoTreino, PerfilAluno, TextoFluencia } from '../types';
 import { calcularEstatisticas, gerarRelatorioPDF } from '../utils/pdfReportGenerator';
+import { normalizarIdPaciente } from '../utils/patientStorage';
 
 interface ModalRelatorioProgressoProps {
   isOpen: boolean;
@@ -33,6 +34,12 @@ interface ModalRelatorioProgressoProps {
   onAdicionarSessao: (sessao: SessaoTreino) => void;
   onRemoverSessao: (id: string) => void;
   onResetarSessoes: () => void;
+  onZerarSessoes?: () => void;
+  onNovoPaciente?: () => void;
+  onTrocarOuCriarPaciente?: (novoNome: string) => void;
+  pacienteAtivoId?: string;
+  todosPacientes?: { id: string; nome: string; sessoesCount: number }[];
+  onSelecionarPaciente?: (id: string) => void;
   textoAtual: TextoFluencia;
   logoPersonalizado: string | null;
   speed: number;
@@ -47,18 +54,26 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
   onAdicionarSessao,
   onRemoverSessao,
   onResetarSessoes,
+  onZerarSessoes,
+  onNovoPaciente,
+  onTrocarOuCriarPaciente,
+  pacienteAtivoId,
+  todosPacientes,
+  onSelecionarPaciente,
   textoAtual,
   logoPersonalizado,
   speed
 }) => {
   const [abaAtiva, setAbaAtiva] = useState<'indicadores' | 'historico' | 'perfil' | 'previa'>('indicadores');
   const [perfilLocal, setPerfilLocal] = useState<PerfilAluno>(perfil);
+  const [nomeLocal, setNomeLocal] = useState<string>(perfil.nome);
   const [gerandoPdf, setGerandoPdf] = useState<boolean>(false);
   const [feedbackSucesso, setFeedbackSucesso] = useState<string | null>(null);
 
   useEffect(() => {
     setPerfilLocal(perfil);
-  }, [perfil]);
+    setNomeLocal(perfil.nome);
+  }, [perfil, pacienteAtivoId]);
 
   if (!isOpen) return null;
 
@@ -66,9 +81,19 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
 
   const handleSalvarPerfilForm = (e: React.FormEvent) => {
     e.preventDefault();
-    onSalvarPerfil(perfilLocal);
-    setFeedbackSucesso('Dados do paciente e avaliação atualizados com sucesso!');
-    setTimeout(() => setFeedbackSucesso(null), 3000);
+    const nomeLimpo = perfilLocal.nome.trim();
+    if (
+      onTrocarOuCriarPaciente &&
+      nomeLimpo &&
+      normalizarIdPaciente(nomeLimpo) !== normalizarIdPaciente(perfil.nome)
+    ) {
+      onTrocarOuCriarPaciente(nomeLimpo);
+      setFeedbackSucesso(`Novo paciente "${nomeLimpo}" registrado com histórico zerado!`);
+    } else {
+      onSalvarPerfil(perfilLocal);
+      setFeedbackSucesso('Dados do paciente e avaliação atualizados com sucesso!');
+    }
+    setTimeout(() => setFeedbackSucesso(null), 3500);
   };
 
   const handleDownloadPDF = () => {
@@ -203,29 +228,82 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
         )}
 
         {/* BARRA RÁPIDA DE IDENTIFICAÇÃO DO PACIENTE & DATA */}
-        <div className="bg-amber-200/60 border-b border-amber-300 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
-          <div className="flex items-center gap-2 flex-1 min-w-[240px]">
+        <div className="bg-amber-200/70 border-b border-amber-300 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2.5 text-xs shrink-0">
+          <div className="flex items-center gap-2 flex-1 min-w-[260px] flex-wrap sm:flex-nowrap">
             <span className="font-bold text-amber-950 flex items-center gap-1.5 shrink-0">
               <User className="w-4 h-4 text-amber-800" />
-              Paciente / Aluno:
+              Paciente:
             </span>
+
+            {/* Seletor dropdown de pacientes existentes */}
+            {todosPacientes && todosPacientes.length > 0 && onSelecionarPaciente && (
+              <select
+                value={pacienteAtivoId}
+                onChange={(e) => {
+                  if (e.target.value === '__novo__' && onNovoPaciente) {
+                    onNovoPaciente();
+                    setFeedbackSucesso('Ficha limpa criada para novo paciente!');
+                    setTimeout(() => setFeedbackSucesso(null), 3000);
+                  } else {
+                    onSelecionarPaciente(e.target.value);
+                  }
+                }}
+                className="px-2 py-1 text-xs font-bold bg-white border border-amber-300 rounded-lg text-stone-800 shadow-2xs max-w-[150px] sm:max-w-[180px] truncate"
+                title="Alternar entre pacientes cadastrados"
+              >
+                {todosPacientes.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    👤 {p.nome} ({p.sessoesCount} {p.sessoesCount === 1 ? 'leitura' : 'leituras'})
+                  </option>
+                ))}
+                <option value="__novo__">➕ + Novo Paciente (Zerar)...</option>
+              </select>
+            )}
+
             <input
               type="text"
-              value={perfilLocal.nome}
-              onChange={(e) => {
-                const updated = { ...perfilLocal, nome: e.target.value };
-                setPerfilLocal(updated);
-                onSalvarPerfil(updated);
+              value={nomeLocal}
+              onChange={(e) => setNomeLocal(e.target.value)}
+              onBlur={() => {
+                const limpo = nomeLocal.trim();
+                if (limpo && onTrocarOuCriarPaciente && normalizarIdPaciente(limpo) !== normalizarIdPaciente(perfil.nome)) {
+                  onTrocarOuCriarPaciente(limpo);
+                  setFeedbackSucesso(`Paciente alternado para "${limpo}". Relatório zerado!`);
+                  setTimeout(() => setFeedbackSucesso(null), 3000);
+                } else if (limpo) {
+                  onSalvarPerfil({ ...perfilLocal, nome: limpo });
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  (e.target as HTMLInputElement).blur();
+                }
               }}
               placeholder="Digite o nome do paciente..."
-              className="flex-1 max-w-sm px-3 py-1 font-bold text-stone-900 bg-white border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
+              className="flex-1 min-w-[140px] max-w-sm px-3 py-1 font-bold text-stone-900 bg-white border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
             />
+
+            {onNovoPaciente && (
+              <button
+                type="button"
+                onClick={() => {
+                  onNovoPaciente();
+                  setFeedbackSucesso('Nova ficha criada com histórico zerado!');
+                  setTimeout(() => setFeedbackSucesso(null), 3000);
+                }}
+                className="px-2.5 py-1 bg-amber-100 hover:bg-amber-300 text-amber-950 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-2xs flex items-center gap-1 shrink-0 border border-amber-300"
+                title="Criar novo paciente com histórico zerado"
+              >
+                <Plus className="w-3.5 h-3.5 text-amber-800" />
+                <span>+ Novo</span>
+              </button>
+            )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
             <span className="font-bold text-amber-950 flex items-center gap-1.5 shrink-0">
               <Calendar className="w-4 h-4 text-amber-800" />
-              Data da Avaliação:
+              Data:
             </span>
             <input
               type="text"
@@ -236,8 +314,26 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
                 onSalvarPerfil(updated);
               }}
               placeholder="DD/MM/AAAA"
-              className="w-28 text-center px-2 py-1 font-bold text-stone-900 bg-white border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
+              className="w-24 text-center px-2 py-1 font-bold text-stone-900 bg-white border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
             />
+
+            {onZerarSessoes && sessoes.length > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm(`Deseja zerar todas as sessões de "${perfilLocal.nome || 'deste paciente'}" para iniciar um novo relatório em branco?`)) {
+                    onZerarSessoes();
+                    setFeedbackSucesso('Histórico zerado com sucesso! Relatório limpo.');
+                    setTimeout(() => setFeedbackSucesso(null), 3000);
+                  }
+                }}
+                className="px-2.5 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-2xs flex items-center gap-1 border border-red-200 shrink-0"
+                title="Zerar todas as leituras deste paciente"
+              >
+                <Trash2 className="w-3.5 h-3.5 text-red-600" />
+                <span>Zerar</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -440,7 +536,7 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <button
                     onClick={handleAdicionarLeituraAtual}
                     className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shadow-xs"
@@ -450,30 +546,56 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
                     <span>Adicionar Texto Atual</span>
                   </button>
 
+                  {onZerarSessoes && sessoes.length > 0 && (
+                    <button
+                      onClick={() => {
+                        if (confirm(`Deseja zerar todas as sessões de ${perfilLocal.nome || 'deste paciente'}?`)) {
+                          onZerarSessoes();
+                          setFeedbackSucesso('Histórico zerado com sucesso! Relatório limpo para novas leituras.');
+                          setTimeout(() => setFeedbackSucesso(null), 3000);
+                        }
+                      }}
+                      className="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shadow-2xs border border-red-200"
+                      title="Zerar todas as leituras deste paciente"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-red-600" />
+                      <span>Zerar Histórico</span>
+                    </button>
+                  )}
+
                   <button
                     onClick={onResetarSessoes}
                     className="px-3 py-1.5 bg-stone-200 hover:bg-stone-300 text-stone-700 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1"
-                    title="Restaurar dados de exemplo do relatório"
+                    title="Restaurar dados de exemplo para demonstração"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
-                    <span>Restaurar Exemplos</span>
+                    <span>Carregar Exemplos</span>
                   </button>
                 </div>
               </div>
 
               {sessoes.length === 0 ? (
-                <div className="bg-white border-2 border-dashed border-amber-300 rounded-2xl p-8 text-center">
-                  <BookOpen className="w-10 h-10 text-amber-400 mx-auto mb-2" />
-                  <p className="text-stone-800 font-bold text-sm">Nenhuma sessão registrada no momento</p>
-                  <p className="text-xs text-stone-500 max-w-sm mx-auto mt-1">
-                    Pratique leituras no aplicativo ou clique em "Restaurar Exemplos" acima para carregar um histórico completo de demonstração.
+                <div className="bg-white border-2 border-dashed border-emerald-300 rounded-2xl p-8 text-center space-y-2">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto" />
+                  <p className="text-stone-800 font-bold text-sm">Histórico Zerado para este Paciente</p>
+                  <p className="text-xs text-stone-600 max-w-md mx-auto">
+                    O paciente <strong>"{perfilLocal.nome || 'Paciente Atual'}"</strong> não possui nenhuma sessão registrada no momento. O relatório está limpo e exclusivo para os treinos dele.
                   </p>
-                  <button
-                    onClick={onResetarSessoes}
-                    className="mt-3 px-4 py-2 bg-amber-600 text-white rounded-xl text-xs font-bold hover:bg-amber-700 cursor-pointer"
-                  >
-                    Carregar Histórico Exemplo
-                  </button>
+                  <div className="flex items-center justify-center gap-2 pt-2 flex-wrap">
+                    <button
+                      onClick={handleAdicionarLeituraAtual}
+                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs flex items-center gap-1.5"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Registrar Texto Aberto na Tela</span>
+                    </button>
+                    <button
+                      onClick={onResetarSessoes}
+                      className="px-3 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-semibold cursor-pointer border border-stone-300"
+                    >
+                      Carregar Dados de Exemplo
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="bg-white border-2 border-amber-200 rounded-2xl overflow-hidden shadow-xs">
@@ -672,7 +794,41 @@ export const ModalRelatorioProgresso: React.FC<ModalRelatorioProgressoProps> = (
                   </p>
                 </div>
 
-                <div className="flex justify-end gap-2 pt-2 border-t border-amber-200">
+                <div className="flex items-center justify-between gap-2 pt-2 border-t border-amber-200 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    {onNovoPaciente && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onNovoPaciente();
+                          setFeedbackSucesso('Nova ficha criada com histórico zerado!');
+                          setTimeout(() => setFeedbackSucesso(null), 3000);
+                        }}
+                        className="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-xl text-xs font-bold shadow-2xs cursor-pointer transition-all border border-amber-300 flex items-center gap-1.5"
+                      >
+                        <Plus className="w-4 h-4 text-amber-800" />
+                        <span>➕ Cadastrar Outro Paciente (Zerar)</span>
+                      </button>
+                    )}
+
+                    {onZerarSessoes && sessoes.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm(`Deseja zerar todas as sessões de "${perfilLocal.nome || 'deste paciente'}"?`)) {
+                            onZerarSessoes();
+                            setFeedbackSucesso('Histórico zerado com sucesso! Relatório limpo.');
+                            setTimeout(() => setFeedbackSucesso(null), 3000);
+                          }
+                        }}
+                        className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-xl text-xs font-bold shadow-2xs cursor-pointer transition-all border border-red-200 flex items-center gap-1.5"
+                      >
+                        <Trash2 className="w-4 h-4 text-red-600" />
+                        <span>Zerar Relatório deste Paciente</span>
+                      </button>
+                    )}
+                  </div>
+
                   <button
                     type="submit"
                     className="px-5 py-2 bg-amber-700 hover:bg-amber-800 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer transition-all"
